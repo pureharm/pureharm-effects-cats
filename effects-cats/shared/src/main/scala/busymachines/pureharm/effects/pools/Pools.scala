@@ -63,16 +63,16 @@ object Pools {
     * DB calls per request).
     *
     * @param threadNamePrefix
-    * prefixes this name to the ThreadID. This is the name
-    * that usually shows up in the logs. It also prefixes
-    * ``-ft${maxThreads}`` after the given string.
+    *   prefixes this name to the ThreadID. This is the name
+    *   that usually shows up in the logs. It also prefixes
+    *   the maxThread count.
     * @param maxThreads
-    * The maximum number of threads in the pool. Always defaults to 1 thread,
-    * if you accidentally give it a value < 1.
+    *   The maximum number of threads in the pool. Always defaults to 1 thread,
+    *   if you accidentally give it a value < 1.
     * @param daemons
-    * whether or not the threads in the pool should be daemons or not.
-    * see java.lang.Thread#setDaemon(boolean) for the meaning
-    * for daemon threads.
+    *   whether or not the threads in the pool should be daemons or not.
+    *   see java.lang.Thread#setDaemon(boolean) for the meaning
+    *   for daemon threads.
     * @return
     *   A fixed thread pool
     */
