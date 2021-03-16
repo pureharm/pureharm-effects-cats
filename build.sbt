@@ -29,6 +29,9 @@ val Scala3RC1 = "3.0.0-RC1"
 //============================ publishing details =============================
 //=============================================================================
 
+//see: https://github.com/xerial/sbt-sonatype#buildsbt
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+
 ThisBuild / baseVersion  := "0.1.0"
 ThisBuild / organization := "com.busymachines"
 ThisBuild / organizationName := "BusyMachines"
