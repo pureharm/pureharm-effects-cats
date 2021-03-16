@@ -18,7 +18,7 @@ package busymachines.pureharm.effects.aliases
 
 import scala.{concurrent => sc}
 
-private[pureharm] trait ScalaStdAliases {
+trait ScalaStdAliases {
 
   //brought in for easy pattern matching. Failure, and Success are used way too often
   //in way too many libraries, so we just alias the std Scala library ones

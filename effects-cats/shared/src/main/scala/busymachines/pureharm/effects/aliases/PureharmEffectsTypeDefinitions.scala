@@ -21,7 +21,7 @@ import busymachines.pureharm.effects
 /** @author Lorand Szakacs, https://github.com/lorandszakacs
   * @since 13 Jun 2019
   */
-trait PureharmEffectsTypeDefs {
+trait PureharmEffectsTypeDefinitions {
 
   //----------- handy custom types -----------
   type Attempt[+R] = effects.Attempt[R]

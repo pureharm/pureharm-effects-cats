@@ -16,7 +16,7 @@
 
 package busymachines.pureharm.effects.aliases
 
-private[pureharm] trait Fs2Aliases {
+trait Fs2Aliases {
   type Stream[+F[_], +O] = fs2.Stream[F, O]
   val Stream: fs2.Stream.type = fs2.Stream
 

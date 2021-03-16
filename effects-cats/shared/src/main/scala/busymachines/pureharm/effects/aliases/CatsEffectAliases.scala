@@ -18,7 +18,7 @@ package busymachines.pureharm.effects.aliases
 
 import cats.{effect => ce}
 
-private[pureharm] trait CatsEffectAliases {
+trait CatsEffectAliases {
 
   //----------- cats-effect types -----------
   final type Sync[F[_]] = ce.Sync[F]

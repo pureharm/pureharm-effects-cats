@@ -16,7 +16,7 @@
 
 package busymachines.pureharm.effects.aliases
 
-private[pureharm] trait CatsAliases {
+trait CatsAliases {
 
   final type Functor[F[_]] = cats.Functor[F]
   final val Functor: cats.Functor.type = cats.Functor
