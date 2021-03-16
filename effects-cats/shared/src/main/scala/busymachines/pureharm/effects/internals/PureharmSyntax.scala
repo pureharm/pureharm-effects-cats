@@ -261,9 +261,9 @@ object PureharmSyntax {
       ec:                                                     ExecutionContext,
     ): Future[C[B]] = FutureOps.serialize(col)(fn)
 
-    /** @see [[serialize]]
+    /** @see serialize
       *
-      * Similar to [[serialize]], but discards all content. i.e. used only
+      * Similar to serialize, but discards all content. i.e. used only
       * for the combined effects.
       */
     @inline def serialize_[A, B, C[X] <: IterableOnce[X]](col: C[A])(fn: A => Future[B])(implicit
@@ -283,34 +283,34 @@ object PureharmSyntax {
 
     @inline def void[A](f: Future[A])(implicit ec: ExecutionContext): Future[Unit] = f.map(unitFunction)
 
-    /** See [[Await.result]]
+    /** See Await.result
       */
     @inline def unsafeRunSync[A](f: Future[A], atMost: Duration = Duration.Inf): A = Await.result(f, atMost)
 
-    /** Similar to [[scala.concurrent.Future.traverse]], but discards all content. i.e. used only
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
       * for the combined effects.
       *
-      * @see [[scala.concurrent.Future.traverse]]
+      * @see scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](
       in: Seq[A]
     )(fn: A => Future[B])(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.traverse(in)(fn))
 
-    /** Similar to [[scala.concurrent.Future.traverse]], but discards all content. i.e. used only
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
       * for the combined effects.
       *
-      * @see [[scala.concurrent.Future.traverse]]
+      * @see scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](
       in: Set[A]
     )(fn: A => Future[B])(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.traverse(in)(fn))
 
-    /** Similar to [[scala.concurrent.Future.sequence]], but discards all content. i.e. used only
+    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only
       * for the combined effects.
       *
-      * @see [[scala.concurrent.Future.sequence]]
+      * @see scala.concurrent.Future.sequence
       */
     @inline def sequence_[A, To](
       in:                Seq[Future[A]]
@@ -390,13 +390,13 @@ object PureharmSyntax {
   final class PureharmTimedAttemptReattemptSyntaxOps[F[_], A](val fa: F[A]) extends AnyVal {
 
     /** @param unit
-      *   You probably don't want a granularity larger than [[MILLISECONDS]]
+      *   You probably don't want a granularity larger than MILLISECONDS
       *   for accurate timing.
       *
-      *   N.B. you can also use [[FiniteDuration.toCoarsest]] to then obtain
+      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
       *   a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the [[Attempt]],
+      *  Never fails and captures the failure of the ``fa`` within the Attempt,
       *  times both success and failure case.
       */
     def timedAttempt(
@@ -412,13 +412,13 @@ object PureharmSyntax {
       *   Use this to specify how to log any error that happens within
       *   your ``fa``, and any error encountered during retries
       * @param timeUnit
-      *   You probably don't want a granularity larger than [[MILLISECONDS]]
+      *   You probably don't want a granularity larger than MILLISECONDS
       *   for accurate timing.
       *
-      *   N.B. you can also use [[FiniteDuration.toCoarsest]] to then obtain
+      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
       *   a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the [[Attempt]],
+      *  Never fails and captures the failure of the ``fa`` within the Attempt,
       *  times all successes and failures, and returns their sum.
       *  N.B.
       *  It only captures the latest failure, if it encounters one.
@@ -435,7 +435,7 @@ object PureharmSyntax {
     ): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps.timedReattempt(errorLog, timeUnit)(retries, betweenRetries)(fa)
 
-    /** Same as overload [[timedReattempt]], but does not report any failures.
+    /** Same as overload timedReattempt, but does not report any failures.
       */
     def timedReattempt(
       timeUnit:       TimeUnit
@@ -457,7 +457,7 @@ object PureharmSyntax {
       *   Use this to specify how to log any error that happens within
       *   your ``fa``, and any error encountered during retries
       *
-      *   N.B. you can also use [[FiniteDuration.toCoarsest]] to then obtain
+      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
       *   a more human friendly measurement as possible
       * @return
       *   N.B.
@@ -474,7 +474,7 @@ object PureharmSyntax {
     ): F[A] =
       PureharmTimedAttemptReattemptSyntaxOps.reattempt(errorLog)(retries, betweenRetries)(fa)
 
-    /** Same semantics as overload [[reattempt]]but does not report any error
+    /** Same semantics as overload reattempt but does not report any error
       */
     def reattempt(
       retries:        Int,
@@ -490,13 +490,13 @@ object PureharmSyntax {
     import scala.concurrent.duration._
 
     /** @param timeUnit
-      *   You probably don't want a granularity larger than [[MILLISECONDS]]
+      *   You probably don't want a granularity larger than MILLISECONDS
       *   for accurate timing.
       *
-      *   N.B. you can also use [[FiniteDuration.toCoarsest]] to then obtain
+      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
       *   a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the [[Attempt]],
+      *  Never fails and captures the failure of the ``fa`` within the Attempt,
       *  times both success and failure case.
       */
     def timedAttempt[F[_], A](
@@ -518,13 +518,13 @@ object PureharmSyntax {
       *   Use this to specify how to log any error that happens within
       *   your ``fa``, and any error encountered during retries
       * @param timeUnit
-      *   You probably don't want a granularity larger than [[MILLISECONDS]]
+      *   You probably don't want a granularity larger than MILLISECONDS
       *   for accurate timing.
       *
-      *   N.B. you can also use [[FiniteDuration.toCoarsest]] to then obtain
+      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
       *   a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the [[Attempt]],
+      *  Never fails and captures the failure of the ``fa`` within the Attempt,
       *  times all successes and failures, and returns their sum.
       *  N.B.
       *  It only captures the latest failure, if it encounters one.
@@ -589,7 +589,7 @@ object PureharmSyntax {
     ): F[A] =
       this.timedReattempt(errorLog, NANOSECONDS)(retries, betweenRetries)(fa).map(_._2).rethrow
 
-    /** Same semantics as overload [[reattempt]]but does not report any error
+    /** Same semantics as overload reattempt but does not report any error
       */
     def reattempt[F[_]: Sync: Timer, A](
       retries:        Int,

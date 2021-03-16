@@ -36,7 +36,7 @@ private[pureharm] object PoolFixed {
     Resource.make(alloc)(free).map(es => ExecutionContextFT(Util.exitOnFatal(es)))
   }
 
-  /** Prefer [[fixed]], unless you know what you are doing.
+  /** Prefer fixed, unless you know what you are doing.
     * The behavior the the Execution context itself is the same
     * for both, but the former is actually safer to use :)
     */

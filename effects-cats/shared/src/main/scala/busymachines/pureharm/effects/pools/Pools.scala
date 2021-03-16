@@ -38,7 +38,7 @@ object Pools {
     *   "cached" to the names.
     * @param daemons
     *   whether or not the threads in the pool should be daemons or not.
-    *   see [[java.lang.Thread#setDaemon(boolean)]] for the meaning
+    *   see java.lang.Thread#setDaemon(boolean) for the meaning
     *   for daemon threads.
     * @return
     */
@@ -48,7 +48,7 @@ object Pools {
   ): Resource[F, ExecutionContextCT] =
     PoolCached.cached(threadNamePrefix, daemons)
 
-  /** The difference between this one and [[ExecutionContextMainFT]] is that
+  /** The difference between this one and ExecutionContextMainFT is that
     * this one allows to us to have a fixed thread pool with 1 thread.
     *
     * N.B.: places where it is advisable to have a fixed thread pool:
@@ -71,7 +71,7 @@ object Pools {
     * if you accidentally give it a value < 1.
     * @param daemons
     * whether or not the threads in the pool should be daemons or not.
-    * see [[java.lang.Thread#setDaemon(boolean)]] for the meaning
+    * see java.lang.Thread#setDaemon(boolean) for the meaning
     * for daemon threads.
     * @return
     *   A fixed thread pool

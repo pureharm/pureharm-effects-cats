@@ -28,7 +28,7 @@ private[pureharm] trait ScalaStdAliases {
   final val TrySuccess: scala.util.Success.type = scala.util.Success
 
   final val NonFatal: scala.util.control.NonFatal.type = scala.util.control.NonFatal
-  
+
   type NoStackTrace = scala.util.control.NoStackTrace
 
   //----------- scala Future -----------

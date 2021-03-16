@@ -19,4 +19,5 @@ package busymachines.pureharm.effects
 import busymachines.pureharm.effects.aliases
 
 trait PureharmEffectsAllTypes
-  extends aliases.PureharmEffectsTypeDefs with aliases.CatsAliases with aliases.ScalaStdAliases with aliases.CatsEffectAliases
+  extends aliases.PureharmEffectsTypeDefs with aliases.CatsAliases with aliases.ScalaStdAliases
+  with aliases.CatsEffectAliases

@@ -28,7 +28,7 @@ object IORuntime {
     * the cats-effect runtime.
     *
     * You really should instantiate this once per app, therefore also
-    * the [[Later]] return type, to properly hammer the point home.
+    * the Later return type, to properly hammer the point home.
     */
   def defaultMainRuntime(
     threadNamePrefix: String = "main-cpu-fixed"
@@ -37,22 +37,22 @@ object IORuntime {
     (mainIOContextShift(ec), mainIOTimer(ec))
   }
 
-  /** Use [[UnsafePools.defaultMainExecutionContext]], then pass it here, or use
-    * [[defaultMainRuntime]] to instantiate all basic machinery.
+  /** Use UnsafePools.defaultMainExecutionContext, then pass it here, or use
+    * defaultMainRuntime to instantiate all basic machinery.
     */
   def mainIOTimer(ec: ExecutionContextMainFT): Timer[IO] = IO.timer(ec)
 
-  /** Use [[UnsafePools.defaultMainExecutionContext]], then pass it here, or use
-    * [[defaultMainRuntime]] to instantiate all basic machinery.
+  /** Use UnsafePools.defaultMainExecutionContext, then pass it here, or use
+    * defaultMainRuntime to instantiate all basic machinery.
     */
   def mainIOContextShift(ec: ExecutionContextMainFT): ContextShift[IO] = IO.contextShift(ec)
 
-  /** Most likely you need only [[defaultMainRuntime]], because
+  /** Most likely you need only defaultMainRuntime, because
     * there's little reason to expose the EC underlying your
-    * [[ContextShift]] and [[Timer]].
+    * ContextShift and Timer.
     *
     * But in the cases you need that, this method behaves like
-    * [[defaultMainRuntime]], but it also gives you the
+    * defaultMainRuntime, but it also gives you the
     * underlying main thread pool
     */
   def defaultMainRuntimeWithEC(

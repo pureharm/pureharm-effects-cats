@@ -46,7 +46,7 @@ trait PureharmIOApp extends IOApp {
     */
   override protected def contextShift: ContextShift[IO] = ioRuntime.value._1
 
-  /** Removing implicitness brought in by [[IOApp]], to make it clearer
+  /** Removing implicitness brought in by IOApp, to make it clearer
     * what's going on.
     */
   override protected def timer: Timer[IO] = ioRuntime.value._2

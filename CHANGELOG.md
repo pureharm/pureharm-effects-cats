@@ -17,6 +17,8 @@ Newly cross published for both Scala 2.13, and 3.0.0-RC1 on JVM and JS runtimes.
 - add dependency and aliases for `fs2-core`
 
 :warning: Source incompatible changes :warning::
+- remove `.onErrorF` syntax for `F[_]: Sync`
+- remove `Attempt` and `IO` companion object ops extensions. Use postfix equivalent cats syntax instead. e.g. `(??? : Throwable).raiseError[F, A]`
 
 Dependencies:
 - [cats](https://github.com/typelevel/cats) `2.4.2`

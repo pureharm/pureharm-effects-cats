@@ -29,7 +29,7 @@ trait PureharmEffectsTypeDefs {
   type AttemptT[F[_], R] = effects.AttemptT[F, R]
   val AttemptT: effects.AttemptT.type = effects.AttemptT
 
-    /** Useful since we don't have partial kind application by default
+  /** Useful since we don't have partial kind application by default
     * Usage:
     * {{{
     *   def canFail[F[_]: ApplicativeAttempt, T](p1: T) : F[T] = ???
@@ -49,5 +49,30 @@ trait PureharmEffectsTypeDefs {
 
   @scala.deprecated("Use BracketThrow instead", "0.1.0")
   type BracketAttempt[F[_]] = cats.effect.Bracket[F, Throwable]
+
+  /** Used to block on an F[A], and ensure that all recovery and
+    * shifting back is always done.
+    *
+    * For instance, always ensure that any F[A] that
+    * talks to, say, amazon S3, is wrapped in such
+    * a
+    * {{{
+    *   blockingShifter.blockOn(S3Util.putSomething(...))
+    * }}}
+    *
+    * Libraries in the typelevel eco-system tend to already do
+    * this, so you don't need to be careful. For instance,
+    * doobie will always ensure that this is done to and
+    * from the EC that you provide specifically for accessing the
+    * DB. But you always need to double check, and be careful
+    * that you NEVER execute blocking IO on the same thread pool
+    * as the CPU bound one dedicated to your ContextShift[A]
+    */
+  type BlockingShifter[F[_]] = busymachines.pureharm.effects.BlockingShifter[F]
+
+  val BlockingShifter: busymachines.pureharm.effects.BlockingShifter.type =
+    busymachines.pureharm.effects.BlockingShifter
+
+  type PureharmIOApp = busymachines.pureharm.effects.PureharmIOApp
 
 }

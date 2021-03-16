@@ -48,7 +48,6 @@ ThisBuild / scmInfo := Option(
   * ThisBuild / publishGithubUser := "lorandszakacs"
   * }}}
   */
-ThisBuild / publishFullName := "Loránd Szakács"
 ThisBuild / developers := List(
   Developer(
     id    = "lorandszakacs",
@@ -98,8 +97,6 @@ lazy val root = project
   .aggregate(
     `effects-catsJVM`,
     `effects-catsJS`,
-    `effects-poolsJVM`,
-    `effects-poolsJS`
   )
   .enablePlugins(NoPublishPlugin)
   .enablePlugins(SonatypeCiReleasePlugin)
@@ -116,8 +113,12 @@ lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-core" % catsV withSources(),
       "org.typelevel" %%% "cats-effect" % catsEffectV withSources(),
+      
       "co.fs2" %%% "fs2-core" % fs2V withSources(),
+      
       "com.busymachines" %%% "pureharm-core-anomaly" % pureharmCoreV withSources(),
+      "com.busymachines" %%% "pureharm-core-sprout" % pureharmCoreV withSources(),
+      
       "org.typelevel" %%% "munit-cats-effect-2" % munitEffect2V % Test withSources(),
     ),
   )
@@ -127,31 +128,6 @@ lazy val `effects-catsJVM` = `effects-cats`.jvm.settings(
 )
 
 lazy val `effects-catsJS` = `effects-cats`.js
-
-//=============================================================================
-
-lazy val `effects-pools` = crossProject(JVMPlatform, JSPlatform)
-  .settings(commonSettings)
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
-  .settings(
-    name := "pureharm-effects-pools",
-    libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core" % catsV withSources(),
-      "org.typelevel" %%% "cats-effect" % catsEffectV withSources(),
-      "co.fs2" %%% "fs2-core" % fs2V withSources(),
-      "com.busymachines" %%% "pureharm-core-anomaly" % pureharmCoreV withSources(),
-      "com.busymachines" %%% "pureharm-core-sprout"  % pureharmCoreV withSources(),
-      "org.typelevel" %%% "munit-cats-effect-2" % munitEffect2V % Test withSources(),
-    ),
-  ).dependsOn(
-    `effects-cats`
-  )
-
-lazy val `effects-poolsJVM` = `effects-pools`.jvm.settings(
-  javaOptions ++= Seq("-source", "1.8", "-target", "1.8")
-)
-
-lazy val `effects-poolsJS` = `effects-pools`.js
 
 //=============================================================================
 //================================= Settings ==================================

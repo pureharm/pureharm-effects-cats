@@ -54,19 +54,19 @@ object UnsafePools {
   def defaultMainExecutionContext(threadNamePrefix: String = "main-cpu-fixed"): ExecutionContextMainFT =
     PoolMainCPU.default(threadNamePrefix)
 
-  /** Like [[defaultMainExecutionContext]], but with a custom upper bound for threads,
+  /** Like defaultMainExecutionContext, but with a custom upper bound for threads,
     * instead one based on the number of available processors
     */
   def mainExecutionContext(threadNamePrefix: String = "main-cpu-fixed", maxThreads: Int): ExecutionContextMainFT =
     PoolMainCPU.main(threadNamePrefix, maxThreads)
 
   /** !!! WARNING !!!
-    * Prefer [[Pools.fixed]], unless you know what you are doing.
+    * Prefer Pools.fixed, unless you know what you are doing.
     * The behavior the the Execution context itself is the same
     * for both, but the former is actually safer to use :)
     * -----
     *
-    * The difference between this one and [[ExecutionContextMainFT]] is that
+    * The difference between this one and ExecutionContextMainFT is that
     * this one allows to us to have a fixed thread pool with 1 thread.
     *
     * N.B.: places where it is advisable to have a fixed thread pool:
@@ -89,7 +89,7 @@ object UnsafePools {
     *   if you accidentally give it a value < 1.
     * @param daemons
     *   whether or not the threads in the pool should be daemons or not.
-    *   see [[java.lang.Thread#setDaemon(boolean)]] for the meaning
+    *   see java.lang.Thread#setDaemon(boolean) for the meaning
     *   for daemon threads.
     * @return
     *   A fixed thread pool
@@ -98,7 +98,7 @@ object UnsafePools {
     PoolFixed.unsafeFixed(threadNamePrefix, maxThreads, daemons)
 
   /** !!! WARNING !!!
-    * Prefer [[Pools.cached]], unless you know what you are doing.
+    * Prefer Pools.cached, unless you know what you are doing.
     * The behavior the the Execution context itself is the same
     * for both, but the former is actually safer to use :)
     * -----
@@ -114,7 +114,7 @@ object UnsafePools {
     *   "cached" to the names.
     * @param daemons
     *   whether or not the threads in the pool should be daemons or not.
-    *   see [[java.lang.Thread#setDaemon(boolean)]] for the meaning
+    *   see java.lang.Thread#setDaemon(boolean) for the meaning
     *   for daemon threads.
     * @return
     */
@@ -122,7 +122,7 @@ object UnsafePools {
     PoolCached.unsafeCached(threadNamePrefix, daemons)
 
   /** !!! WARNING !!!
-    * Prefer [[Pools.singleThreaded]], unless you know what you are doing.
+    * Prefer Pools.singleThreaded, unless you know what you are doing.
     * The behavior the the Execution context itself is the same
     * for both, but the former is actually safer to use :)
     * -----
