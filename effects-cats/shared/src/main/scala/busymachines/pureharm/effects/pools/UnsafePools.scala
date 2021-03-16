@@ -83,7 +83,7 @@ object UnsafePools {
     * @param threadNamePrefix
     *   prefixes this name to the ThreadID. This is the name
     *   that usually shows up in the logs. It also prefixes
-    *   ``-ft${maxThreads}`` after the given string.
+    *   the maxThread count.
     * @param maxThreads
     *   The maximum number of threads in the pool. Always defaults to 1 thread,
     *   if you accidentally give it a value < 1.
