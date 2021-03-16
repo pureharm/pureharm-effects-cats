@@ -78,8 +78,8 @@ ThisBuild / versionIntroduced := Map(
 //=============================================================================
 //================================ Dependencies ===============================
 //=============================================================================
-ThisBuild / resolvers +=
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+ThisBuild / resolvers += Resolver.sonatypeRepo("releases")
+ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
 val catsV = "2.4.2"         //https://github.com/typelevel/cats/releases
 val catsEffectV = "2.3.3"   //https://github.com/typelevel/cats-effect/releases
