@@ -16,6 +16,28 @@ The available modules are.
 
 Under construction. See [release notes](https://github.com/busymachines/pureharm-effects-cats/releases) and tests for examples.
 
+The recommended way of making use of this module is to create your own "effects" package giving you seemless pure-functional scala experience without import confusion. It's for developers who realized that you can't really write any production apps without treating `cats`, `cats-effect`, `fs2` as being standard library.
+
+```scala
+package myapp
+
+import busymachines.pureharm
+
+package object effects extends pureharm.effects.PureharmEffectsAliases with pureharm.effects.PureharmEffectsImplicits {
+  //write your own custom opiniated things here!
+}
+
+//everywhere else in your code just do:
+import myapp.effects._
+
+//instead of:
+import cats._
+import cats.implicits._
+import cats.effect._
+import cats.effect.implicits._
+import fs2._
+```
+
 ## Copyright and License
 
 All code is available to you under the Apache 2.0 license, available
