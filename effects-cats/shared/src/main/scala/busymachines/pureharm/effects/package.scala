@@ -16,7 +16,9 @@
 
 package busymachines.pureharm
 
-package object effects extends aliases.CatsAliases with aliases.CatsEffectAliases with aliases.ScalaStdAliases {
+package object effects
+  extends aliases.CatsAliases with aliases.CatsEffectAliases with aliases.Fs2Aliases with aliases.ScalaStdAliases {
+
   type Attempt[+R] = Either[Throwable, R]
   val Attempt: Either.type = Either
 
@@ -50,5 +52,5 @@ package object effects extends aliases.CatsAliases with aliases.CatsEffectAliase
     * This object is meant to bring in everything that is in cats + some extra, without burdening
     * the user with two different imports.
     */
-  object implicits extends PureharmEffectsAllImplicits
+  object implicits extends PureharmEffectsImplicits
 }

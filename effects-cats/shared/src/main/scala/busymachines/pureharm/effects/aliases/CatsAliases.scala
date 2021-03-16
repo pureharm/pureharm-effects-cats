@@ -87,9 +87,6 @@ private[pureharm] trait CatsAliases {
   final type Hash[A] = cats.Hash[A]
   final val Hash: cats.Hash.type = cats.Hash
 
-  final type Semigroup[A] = cats.Semigroup[A]
-  final val Semigroup: cats.Semigroup.type = cats.Semigroup
-
   final type Monoid[A] = cats.Monoid[A]
   final val Monoid: cats.Monoid.type = cats.Monoid
 

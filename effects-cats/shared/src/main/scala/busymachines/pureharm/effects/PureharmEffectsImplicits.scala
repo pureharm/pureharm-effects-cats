@@ -16,8 +16,8 @@
 
 package busymachines.pureharm.effects
 
-import busymachines.pureharm.effects.aliases
+import busymachines.pureharm.effects.{aliases, internals}
 
-trait PureharmEffectsAllTypes
-  extends aliases.PureharmEffectsTypeDefs with aliases.CatsAliases with aliases.ScalaStdAliases
-  with aliases.CatsEffectAliases
+trait PureharmEffectsImplicits
+  extends aliases.CatsImplicits with internals.PureharmUnlawfulInstances with internals.PureharmShowInstances.Implicits
+  with internals.PureharmSyntax.Implicits
