@@ -50,6 +50,8 @@ trait PureharmEffectsTypeDefinitions {
   @scala.deprecated("Use BracketThrow instead", "0.1.0")
   type BracketAttempt[F[_]] = cats.effect.Bracket[F, Throwable]
 
+  val BracketThrow: busymachines.pureharm.effects.BracketThrow.type = busymachines.pureharm.effects.BracketThrow
+
   /** Used to block on an F[A], and ensure that all recovery and
     * shifting back is always done.
     *

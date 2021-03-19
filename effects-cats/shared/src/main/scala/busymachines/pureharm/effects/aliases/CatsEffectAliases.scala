@@ -67,6 +67,8 @@ trait CatsEffectAliases {
   final type Bracket[F[_], E] = ce.Bracket[F, E]
   final val Bracket: ce.Bracket.type = ce.Bracket
 
+  final type BracketThrow[F[_]] = ce.BracketThrow[F]
+
   final type Resource[F[_], A] = ce.Resource[F, A]
   final val Resource: ce.Resource.type = ce.Resource
 
