@@ -19,5 +19,5 @@ package busymachines.pureharm.effects
 import busymachines.pureharm.effects.{aliases, internals}
 
 trait PureharmEffectsImplicits
-  extends aliases.CatsImplicits with internals.PureharmUnlawfulInstances with internals.PureharmShowInstances.Implicits
+  extends aliases.CatsImplicits with internals.PureharmUnlawfulInstances
   with internals.PureharmSyntax.Implicits
