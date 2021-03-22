@@ -24,7 +24,7 @@ import cats.effect._
   */
 object Pools {
 
-  def availableCPUs[F[_]: Sync]: Resource[F, Int] = Resource.liftF(Sync[F].delay(Util.unsafeAvailableCPUs))
+  def availableCPUs[F[_]: Sync]: Resource[F, Int] = Resource.eval(Sync[F].delay(Util.unsafeAvailableCPUs))
 
   /** Cached pools should be used for blocking i/o. Without very
     * stringent back-pressure and 100% certainty that you never
