@@ -8,7 +8,7 @@ The available modules are.
 
 - `"com.busymachines" %% "pureharm-effects-cats" % "0.1.0"`
     - [cats](https://github.com/typelevel/cats/releases) `2.4.2`
-    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.3.3`
+    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.4.0`
     - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.3`
     - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.1.0`
     - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.1.0`
