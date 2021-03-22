@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
+Version upgrades:
+- cats-effect `2.4.0`
+
 # 0.1.0
 
 Split out from [pureharm](https://github.com/busymachines/pureharm) as of version `0.0.7`.
