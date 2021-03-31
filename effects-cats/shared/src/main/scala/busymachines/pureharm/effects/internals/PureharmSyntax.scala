@@ -430,7 +430,7 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Sync[F],
+      F:              MonadThrow[F],
       timer:          Timer[F],
     ): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps.timedReattempt(errorLog, timeUnit)(retries, betweenRetries)(fa)
@@ -443,7 +443,7 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Sync[F],
+      F:              MonadThrow[F],
       timer:          Timer[F],
     ): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps
@@ -469,7 +469,7 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Sync[F],
+      F:              MonadThrow[F],
       timer:          Timer[F],
     ): F[A] =
       PureharmTimedAttemptReattemptSyntaxOps.reattempt(errorLog)(retries, betweenRetries)(fa)
@@ -480,7 +480,7 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Sync[F],
+      F:              MonadThrow[F],
       timer:          Timer[F],
     ): F[A] =
       PureharmTimedAttemptReattemptSyntaxOps.reattempt(retries, betweenRetries)(fa)
@@ -529,7 +529,7 @@ object PureharmSyntax {
       *  N.B.
       *  It only captures the latest failure, if it encounters one.
       */
-    def timedReattempt[F[_]: Sync: Timer, A](
+    def timedReattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
     )(
@@ -579,7 +579,7 @@ object PureharmSyntax {
       *   N.B.
       *   It only captures the latest failure, if it encounters one.
       */
-    def reattempt[F[_]: Sync: Timer, A](
+    def reattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit]
     )(
       retries:        Int,
@@ -591,13 +591,13 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
-    def reattempt[F[_]: Sync: Timer, A](
+    def reattempt[F[_]: MonadThrow: Timer, A](
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(
       fa:             F[A]
     ): F[A] =
-      this.timedReattempt(noLog(Sync[F]), NANOSECONDS)(retries, betweenRetries)(fa).map(_._2).rethrow
+      this.timedReattempt(noLog(MonadThrow[F]), NANOSECONDS)(retries, betweenRetries)(fa).map(_._2).rethrow
 
     private def noLog[F[_]: Applicative]: (Throwable, String) => F[Unit] =
       (_, _) => Applicative[F].unit
