@@ -86,13 +86,14 @@ ThisBuild / versionIntroduced := Map(
 ThisBuild / resolvers += Resolver.sonatypeRepo("releases")
 ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
-val catsV         = "2.5.0" //https://github.com/typelevel/cats/releases
-val catsEffectV   = "2.4.1" //https://github.com/typelevel/cats-effect/releases
-val fs2V          = "2.5.3" //https://github.com/typelevel/fs2/releases
-val pureharmCoreV = "0.1.0" //https://github.com/busymachines/pureharm-core/releases
+// format: off
+val catsV            = "2.5.0" //https://github.com/typelevel/cats/releases
+val catsEffectV      = "2.4.1" //https://github.com/typelevel/cats-effect/releases
+val fs2V             = "2.5.4" //https://github.com/typelevel/fs2/releases
+val pureharmCoreV    = "0.1.0" //https://github.com/busymachines/pureharm-core/releases
 
-//testing only
-val munitEffect2V = "0.13.1" //https://github.com/typelevel/munit-cats-effect/releases
+val munitEffect2V    = "0.13.1" //https://github.com/typelevel/munit-cats-effect/releases
+// format: on
 //=============================================================================
 //============================== Project details ==============================
 //=============================================================================
