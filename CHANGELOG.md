@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Features:
 - loosen constraint on all `*attempt*` like methods from `Sync[F]` to `MonadThrow[F]`. There was no reason for it to be `Sync`.
+- add `.reattempt` syntax for `Stream[F, A]`
 
 Removed deprecations:
 - remove (Applicative/Monad/Bracket)Attempt types. Use The `*Throw` aliases.

@@ -26,6 +26,7 @@ import scala.concurrent.duration._
 import scala.concurrent._
 import scala.util.control.NonFatal
 import scala.collection.BuildFrom
+import fs2._
 
 /** @author Lorand Szakacs, https://github.com/lorandszakacs
   * @since 10 May 2019
@@ -52,10 +53,13 @@ object PureharmSyntax {
     implicit final def pureharmFutureReferenceEagerOps[A](f: Future[A]): FutureReferenceEagerOps[A] =
       new FutureReferenceEagerOps[A](f)
 
-    implicit def pureharmTimedAttemptReattemptSyntaxOPS[F[_], A](
+    implicit final def pureharmTimedAttemptReattemptSyntaxOPS[F[_], A](
       fa: F[A]
     ): PureharmTimedAttemptReattemptSyntaxOps[F, A] =
       new PureharmTimedAttemptReattemptSyntaxOps[F, A](fa)
+
+    implicit final def pureharmStreamOps[F[_], A](stream: Stream[F, A]): PureharmStreamOps[F, A] =
+      new PureharmStreamOps(stream)
   }
 
   //---------------------------- FOps ----------------------------
@@ -597,7 +601,7 @@ object PureharmSyntax {
     )(
       fa:             F[A]
     ): F[A] =
-      this.timedReattempt(noLog(MonadThrow[F]), NANOSECONDS)(retries, betweenRetries)(fa).map(_._2).rethrow
+      this.timedReattempt(noLog[F], NANOSECONDS)(retries, betweenRetries)(fa).map(_._2).rethrow
 
     private def noLog[F[_]: Applicative]: (Throwable, String) => F[Unit] =
       (_, _) => Applicative[F].unit
@@ -606,6 +610,51 @@ object PureharmSyntax {
     private def realTime[F[_]: Applicative: Timer](unit: TimeUnit): F[FiniteDuration] =
       Timer[F].clock.realTime(unit).map(tl => FiniteDuration(tl, unit))
 
+  }
+
+  final class PureharmStreamOps[F[_], A](val stream: Stream[F, A]) {
+
+    def reattempt(
+      retries:        Int,
+      betweenRetries: FiniteDuration,
+    )(implicit F:     MonadThrow[F], timer: Timer[F]): Stream[F, A] =
+      this.reattempt(noLog[F])(retries, betweenRetries)
+
+    def reattempt(
+      errorLog:       (Throwable, String) => F[Unit]
+    )(
+      retries:        Int,
+      betweenRetries: FiniteDuration,
+    )(implicit
+      F:              MonadThrow[F],
+      timer:          Timer[F],
+    ): Stream[F, A] =
+      stream.recoverWith { case e: Throwable =>
+        if (retries > 0) {
+          Stream
+            .eval(
+              errorLog(
+                e,
+                s"Stream failed w/: ${e.getMessage}. retries left=$retries, but first waiting: $betweenRetries",
+              ) *> timer.sleep(betweenRetries)
+            )
+            .flatMap(_ => reattempt(errorLog)(retries - 1, betweenRetries))
+        }
+        else {
+          Stream
+            .eval(
+              errorLog(
+                e,
+                s"Stream failed even after exhausting all retries w/: ${e.getMessage}.",
+              ) *> timer.sleep(betweenRetries)
+            )
+            .flatMap(_ => e.raiseError[Stream[F, *], A])
+
+        }
+      }
+
+    private def noLog[F[_]: Applicative]: (Throwable, String) => F[Unit] =
+      (_, _) => Applicative[F].unit
   }
 
 }
