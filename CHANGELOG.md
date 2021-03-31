@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
+Features:
+- loosen constraint on all `*attempt*` like methods from `Sync[F]` to `MonadThrow[F]`. There was no reason for it to be `Sync`.
+
+Removed deprecations:
+- remove (Applicative/Monad/Bracket)Attempt types. Use The `*Throw` aliases.
+
 Version upgrades:
-- cats `2.5.0`
-- cats-effect `2.4.1`
+- [cats](https://github.com/typelevel/cats) `2.5.0`
+- [cats-effect](https://github.com/typelevel/cats-effect) `2.4.1`
 
 New Scala versions:
 - 3.0.0-RC2
