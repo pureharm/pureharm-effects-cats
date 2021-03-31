@@ -4,7 +4,10 @@ See [changelog](./CHANGELOG.md).
 
 ## modules
 
-The available modules are.
+### Scala versions
+Scala `2.13`, `3.0.0-RC1`, `3.0.0-RC2`, for JVM and JS.
+
+The available modules are:
 
 - `"com.busymachines" %% "pureharm-effects-cats" % "0.2.0"`
     - [cats](https://github.com/typelevel/cats/releases) `2.5.0`
@@ -12,6 +15,7 @@ The available modules are.
     - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.4`
     - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
     - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
+
 ## usage
 
 Under construction. See [release notes](https://github.com/busymachines/pureharm-effects-cats/releases) and tests for examples.
