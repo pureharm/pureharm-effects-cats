@@ -6,12 +6,12 @@ See [changelog](./CHANGELOG.md).
 
 The available modules are.
 
-- `"com.busymachines" %% "pureharm-effects-cats" % "0.1.0"`
-    - [cats](https://github.com/typelevel/cats/releases) `2.4.2`
-    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.3.3`
-    - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.3`
-    - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.1.0`
-    - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.1.0`
+- `"com.busymachines" %% "pureharm-effects-cats" % "0.2.0"`
+    - [cats](https://github.com/typelevel/cats/releases) `2.5.0`
+    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.4.1`
+    - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.4`
+    - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
+    - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
 ## usage
 
 Under construction. See [release notes](https://github.com/busymachines/pureharm-effects-cats/releases) and tests for examples.

@@ -24,6 +24,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 val Scala213  = "2.13.5"
 val Scala3RC1 = "3.0.0-RC1"
+val Scala3RC2 = "3.0.0-RC2"
 
 //=============================================================================
 //============================ publishing details =============================
@@ -32,7 +33,7 @@ val Scala3RC1 = "3.0.0-RC1"
 //see: https://github.com/xerial/sbt-sonatype#buildsbt
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 
-ThisBuild / baseVersion  := "0.1"
+ThisBuild / baseVersion  := "0.2"
 ThisBuild / organization := "com.busymachines"
 ThisBuild / organizationName := "BusyMachines"
 ThisBuild / homepage     := Option(url("https://github.com/busymachines/pureharm-effects-cats"))
@@ -70,12 +71,13 @@ ThisBuild / spiewakMainBranches       := List("main")
 ThisBuild / Test / publishArtifact    := false
 
 ThisBuild / scalaVersion       := Scala213
-ThisBuild / crossScalaVersions := List(Scala213, Scala3RC1)
+ThisBuild / crossScalaVersions := List(Scala213, Scala3RC1, Scala3RC2)
 
 //required for binary compat checks
 ThisBuild / versionIntroduced := Map(
   Scala213  -> "0.1.0",
   Scala3RC1 -> "0.1.0",
+  Scala3RC2 -> "0.2.0",
 )
 
 //=============================================================================
@@ -84,13 +86,14 @@ ThisBuild / versionIntroduced := Map(
 ThisBuild / resolvers += Resolver.sonatypeRepo("releases")
 ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
-val catsV         = "2.4.2" //https://github.com/typelevel/cats/releases
-val catsEffectV   = "2.4.0" //https://github.com/typelevel/cats-effect/releases
-val fs2V          = "2.5.3" //https://github.com/typelevel/fs2/releases
-val pureharmCoreV = "0.1.0" //https://github.com/busymachines/pureharm-core/releases
+// format: off
+val catsV            = "2.5.0"       //https://github.com/typelevel/cats/releases
+val catsEffectV      = "2.4.1"       //https://github.com/typelevel/cats-effect/releases
+val fs2V             = "2.5.4"       //https://github.com/typelevel/fs2/releases
+val pureharmCoreV    = "0.2.0"       //https://github.com/busymachines/pureharm-core/releases
 
-//testing only
-val munitEffect2V = "0.13.1" //https://github.com/typelevel/munit-cats-effect/releases
+val munitCE2V        = "1.0.1"       //https://github.com/typelevel/munit-cats-effect/releases
+// format: on
 //=============================================================================
 //============================== Project details ==============================
 //=============================================================================
@@ -122,7 +125,7 @@ lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
       "com.busymachines" %%% "pureharm-core-anomaly" % pureharmCoreV withSources(),
       "com.busymachines" %%% "pureharm-core-sprout" % pureharmCoreV withSources(),
       
-      "org.typelevel" %%% "munit-cats-effect-2" % munitEffect2V % Test withSources(),
+      "org.typelevel" %%% "munit-cats-effect-2" % munitCE2V % Test withSources(),
     ),
   )
 
