@@ -11,6 +11,9 @@ Version upgrades:
 - cats `2.5.0`
 - cats-effect `2.4.1`
 
+New Scala versions:
+- 3.0.0-RC2
+
 # 0.1.0
 
 Split out from [pureharm](https://github.com/busymachines/pureharm) as of version `0.0.7`.
