@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 # unreleased
 
 Version upgrades:
-- cats-effect `2.4.0`
+- cats `2.5.0`
+- cats-effect `2.4.1`
 
 # 0.1.0
 
