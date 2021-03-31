@@ -17,10 +17,11 @@ Removed deprecations:
 - remove (Applicative/Monad/Bracket)Attempt types. Use The `*Throw` aliases.
 
 Version upgrades:
-
 - [cats](https://github.com/typelevel/cats) `2.5.0`
 - [cats-effect](https://github.com/typelevel/cats-effect) `2.4.1`
 - [fs2-core](https://github.com/typelevel/fs2) `2.5.4`
+- [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
+- [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
 
 New Scala versions:
 
