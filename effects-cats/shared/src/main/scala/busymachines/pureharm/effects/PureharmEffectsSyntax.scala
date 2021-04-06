@@ -22,5 +22,5 @@ import busymachines.pureharm.effects.{aliases, internals}
   "Use PureharmEffectsSyntax instead, this trait contains unnecessary cats.instances.all as well",
   "0.2.1",
 )
-trait PureharmEffectsImplicits
-  extends aliases.CatsImplicits with internals.PureharmUnlawfulInstances with internals.PureharmSyntax.Implicits
+trait PureharmEffectsSyntax
+  extends aliases.CatsSyntax with internals.PureharmUnlawfulInstances with internals.PureharmSyntax.Implicits

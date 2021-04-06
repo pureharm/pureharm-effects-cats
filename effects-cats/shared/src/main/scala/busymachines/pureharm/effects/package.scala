@@ -31,5 +31,6 @@ package object effects
     * This object is meant to bring in everything that is in cats + some extra, without burdening
     * the user with two different imports.
     */
+  @scala.annotation.nowarn
   object implicits extends PureharmEffectsImplicits
 }
