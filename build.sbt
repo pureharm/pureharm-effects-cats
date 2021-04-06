@@ -33,7 +33,7 @@ val Scala3RC2 = "3.0.0-RC2"
 //see: https://github.com/xerial/sbt-sonatype#buildsbt
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 
-ThisBuild / baseVersion  := "0.3.1"
+ThisBuild / baseVersion  := "0.4"
 ThisBuild / organization := "com.busymachines"
 ThisBuild / organizationName := "BusyMachines"
 ThisBuild / homepage     := Option(url("https://github.com/busymachines/pureharm-effects-cats"))
@@ -91,7 +91,6 @@ val catsV            = "2.5.0"       //https://github.com/typelevel/cats/release
 val catsEffectV      = "2.4.1"       //https://github.com/typelevel/cats-effect/releases
 val fs2V             = "2.5.4"       //https://github.com/typelevel/fs2/releases
 val pureharmCoreV    = "0.2.0"       //https://github.com/busymachines/pureharm-core/releases
-
 val munitCE2V        = "1.0.1"       //https://github.com/typelevel/munit-cats-effect/releases
 // format: on
 //=============================================================================
@@ -110,7 +109,6 @@ lazy val root = project
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings)
-  .disablePlugins(MimaPlugin)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))

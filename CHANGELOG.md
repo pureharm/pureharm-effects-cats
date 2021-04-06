@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
-# 0.3.0
+# 0.4.0
 
 - add a bunch of missing aliases from cats
 
@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - deprecate `aliases.CatsImplicits` in favor of `aliases.CatsSyntax`, the latter does not bring in no longer needed `cats.instances.all._` import
 - deprecate `PureharmImplicits` in favor of `PureharmSyntax`, the latter does not bring in no longer needed `cats.instances.all._` import
+
+# 0.3.0
+
+:warning: botched release :warning:
+
+use `0.4.0`
 
 # 0.2.0
 
