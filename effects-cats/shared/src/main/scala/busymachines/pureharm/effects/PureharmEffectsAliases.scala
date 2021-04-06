@@ -18,6 +18,11 @@ package busymachines.pureharm.effects
 
 import busymachines.pureharm.effects.aliases
 
+// format: off
 trait PureharmEffectsAliases
-  extends aliases.PureharmEffectsTypeDefinitions with aliases.CatsAliases with aliases.ScalaStdAliases
-  with aliases.CatsEffectAliases with aliases.Fs2Aliases
+  extends aliases.PureharmEffectsTypeDefinitions
+  with aliases.CatsAliases
+  with aliases.ScalaStdAliases
+  with aliases.CatsEffectAliases
+  with aliases.Fs2Aliases
+// format: on

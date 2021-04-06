@@ -18,7 +18,16 @@ package busymachines.pureharm.effects.aliases
 
 import cats.syntax
 
+// format: off
 trait CatsSyntax
-  extends syntax.AllSyntax with syntax.AllSyntaxBinCompat0 with syntax.AllSyntaxBinCompat1
-  with syntax.AllSyntaxBinCompat2 with syntax.AllSyntaxBinCompat3 with syntax.AllSyntaxBinCompat4
-  with syntax.AllSyntaxBinCompat5 with syntax.AllSyntaxBinCompat6 with syntax.AllSyntaxBinCompat7
+  extends cats.effect.syntax.AllCatsEffectSyntax
+  with syntax.AllSyntax
+  with syntax.AllSyntaxBinCompat0
+  with syntax.AllSyntaxBinCompat1
+  with syntax.AllSyntaxBinCompat2
+  with syntax.AllSyntaxBinCompat3
+  with syntax.AllSyntaxBinCompat4
+  with syntax.AllSyntaxBinCompat5
+  with syntax.AllSyntaxBinCompat6
+  with syntax.AllSyntaxBinCompat7
+// format: on

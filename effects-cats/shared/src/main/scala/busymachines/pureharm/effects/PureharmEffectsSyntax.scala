@@ -18,6 +18,9 @@ package busymachines.pureharm.effects
 
 import busymachines.pureharm.effects.{aliases, internals}
 
+// format: off
 trait PureharmEffectsSyntax
-  extends aliases.CatsSyntax with internals.PureharmUnlawfulInstances with internals.PureharmSyntax.Implicits
-  with cats.effect.syntax.AllCatsEffectSyntax
+  extends aliases.CatsSyntax
+  with internals.PureharmUnlawfulInstances
+  with internals.PureharmSyntax.Implicits
+// format: on
