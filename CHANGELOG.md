@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
+# 0.2.1
+
+- add a bunch of missing aliases from cats
+
+### deprecations:
+
+- deprecate `aliases.CatsImplicits` in favor of `aliases.CatsSyntax`, the latter does not bring in no longer needed `cats.instances.all._` import
+- deprecate `PureharmImplicits` in favor of `PureharmSyntax`, the latter does not bring in no longer needed `cats.instances.all._` import
+
 # 0.2.0
 
 ### Features:
@@ -19,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove (Applicative/Monad/Bracket)Attempt types. Use The `*Throw` aliases.
 
 ### Version upgrades:
+
 - [cats](https://github.com/typelevel/cats) `2.5.0`
 - [cats-effect](https://github.com/typelevel/cats-effect) `2.4.1`
 - [fs2-core](https://github.com/typelevel/fs2) `2.5.4`
@@ -40,6 +50,7 @@ Split out from [pureharm](https://github.com/busymachines/pureharm) as of versio
 Newly cross published for both Scala 2.13, and 3.0.0-RC1 on JVM and JS runtimes.
 
 ### Changes
+
 - add dependency and aliases for `fs2-core`
 
 :warning: Source incompatible changes :warning::

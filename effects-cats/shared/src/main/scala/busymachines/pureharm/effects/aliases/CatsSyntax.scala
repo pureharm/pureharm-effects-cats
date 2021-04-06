@@ -16,13 +16,9 @@
 
 package busymachines.pureharm.effects.aliases
 
-import cats.{instances, syntax}
+import cats.syntax
 
-@scala.deprecated("Use CatsSyntax instead, this trait contains unnecessary instances as well", "0.2.1")
-trait CatsImplicits
+trait CatsSyntax
   extends syntax.AllSyntax with syntax.AllSyntaxBinCompat0 with syntax.AllSyntaxBinCompat1
   with syntax.AllSyntaxBinCompat2 with syntax.AllSyntaxBinCompat3 with syntax.AllSyntaxBinCompat4
-  with syntax.AllSyntaxBinCompat5 with syntax.AllSyntaxBinCompat6 with instances.AllInstances
-  with instances.AllInstancesBinCompat0 with instances.AllInstancesBinCompat1 with instances.AllInstancesBinCompat2
-  with instances.AllInstancesBinCompat3 with instances.AllInstancesBinCompat4 with instances.AllInstancesBinCompat5
-  with instances.AllInstancesBinCompat6 with cats.effect.syntax.AllCatsEffectSyntax
+  with syntax.AllSyntaxBinCompat5 with syntax.AllSyntaxBinCompat6 with syntax.AllSyntaxBinCompat7
