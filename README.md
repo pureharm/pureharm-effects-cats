@@ -9,7 +9,7 @@ Scala `2.13`, `3.0.0-RC1`, `3.0.0-RC2`, for JVM and JS.
 
 The available modules are:
 
-- `"com.busymachines" %% "pureharm-effects-cats" % "0.2.0"`
+- `"com.busymachines" %% "pureharm-effects-cats" % "0.2.1"`
     - [cats](https://github.com/typelevel/cats/releases) `2.5.0`
     - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.4.1`
     - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.4`
