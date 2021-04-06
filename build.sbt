@@ -33,7 +33,7 @@ val Scala3RC2 = "3.0.0-RC2"
 //see: https://github.com/xerial/sbt-sonatype#buildsbt
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 
-ThisBuild / baseVersion  := "0.2"
+ThisBuild / baseVersion  := "0.3"
 ThisBuild / organization := "com.busymachines"
 ThisBuild / organizationName := "BusyMachines"
 ThisBuild / homepage     := Option(url("https://github.com/busymachines/pureharm-effects-cats"))
@@ -109,7 +109,6 @@ lazy val root = project
   .settings(commonSettings)
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
-  .disablePlugins(MimaPlugin)
   .settings(commonSettings)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .jsSettings(
