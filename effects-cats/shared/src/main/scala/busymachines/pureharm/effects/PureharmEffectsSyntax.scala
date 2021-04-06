@@ -18,9 +18,6 @@ package busymachines.pureharm.effects
 
 import busymachines.pureharm.effects.{aliases, internals}
 
-@scala.deprecated(
-  "Use PureharmEffectsSyntax instead, this trait contains unnecessary cats.instances.all as well",
-  "0.2.1",
-)
 trait PureharmEffectsSyntax
   extends aliases.CatsSyntax with internals.PureharmUnlawfulInstances with internals.PureharmSyntax.Implicits
+  with cats.effect.syntax.AllCatsEffectSyntax

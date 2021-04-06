@@ -110,6 +110,7 @@ lazy val root = project
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings)
+  .disablePlugins(MimaPlugin)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
