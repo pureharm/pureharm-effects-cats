@@ -109,7 +109,6 @@ lazy val root = project
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings)
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
@@ -139,19 +138,4 @@ lazy val `effects-catsJS` = `effects-cats`.js
 //=============================================================================
 
 lazy val commonSettings = Seq(
-  //required for munit: https://scalameta.org/munit/docs/getting-started.html
-  testFrameworks += new TestFramework("munit.Framework"),
-
-  Compile / unmanagedSourceDirectories ++= {
-    val major = if (isDotty.value) "-3" else "-2"
-    List(CrossType.Pure, CrossType.Full).flatMap(
-      _.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + major))
-    )
-  },
-  Test / unmanagedSourceDirectories ++= {
-    val major = if (isDotty.value) "-3" else "-2"
-    List(CrossType.Pure, CrossType.Full).flatMap(
-      _.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + major))
-    )
-  },
 )
