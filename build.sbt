@@ -98,8 +98,8 @@ val munitCE2V        = "1.0.5"       //https://github.com/typelevel/munit-cats-e
 lazy val root = project
   .in(file("."))
   .aggregate(
-    `effects-catsJVM`,
-    `effects-catsJS`,
+    `effects-cats-2JVM`,
+    `effects-cats-2JS`,
   )
   .enablePlugins(NoPublishPlugin)
   .enablePlugins(SonatypeCiReleasePlugin)
@@ -107,7 +107,7 @@ lazy val root = project
     scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
   )
 
-lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
+lazy val `effects-cats-2` = crossProject(JVMPlatform, JSPlatform)
   .settings(
     scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
   )
@@ -115,7 +115,7 @@ lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
   .settings(
-    name := "pureharm-effects-cats",
+    name := "pureharm-effects-cats-2",
     libraryDependencies ++= Seq(
       // format: off
       "org.typelevel"       %%% "cats-core"                   % catsV                    withSources(),
@@ -128,11 +128,11 @@ lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
     ),
   )
 
-lazy val `effects-catsJVM` = `effects-cats`.jvm.settings(
+lazy val `effects-cats-2JVM` = `effects-cats-2`.jvm.settings(
   javaOptions ++= Seq("-source", "1.8", "-target", "1.8")
 )
 
-lazy val `effects-catsJS` = `effects-cats`.js
+lazy val `effects-cats-2JS` = `effects-cats-2`.js
 
 //=============================================================================
 //================================= Settings ==================================
