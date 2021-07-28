@@ -18,8 +18,10 @@ package busymachines.pureharm.effects.pools
 
 import busymachines.pureharm.effects.pools.ExecutionContextMainFT
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 15 Jun 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 15
+  *   Jun 2019
   */
 private[pureharm] object PoolMainCPU {
 

@@ -21,8 +21,10 @@ import java.util.concurrent._
 import busymachines.pureharm.effects.pools.ExecutionContextFT
 import cats.effect._
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 15 Jun 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 15
+  *   Jun 2019
   */
 private[pureharm] object PoolFixed {
 
@@ -36,9 +38,8 @@ private[pureharm] object PoolFixed {
     Resource.make(alloc)(free).map(es => ExecutionContextFT(Util.exitOnFatal(es)))
   }
 
-  /** Prefer fixed, unless you know what you are doing.
-    * The behavior the the Execution context itself is the same
-    * for both, but the former is actually safer to use :)
+  /** Prefer fixed, unless you know what you are doing. The behavior the the Execution context itself is the same for
+    * both, but the former is actually safer to use :)
     */
   def unsafeFixed(
     threadNamePrefix: String,

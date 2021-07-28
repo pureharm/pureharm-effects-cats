@@ -25,11 +25,10 @@ package object effects
   type AttemptT[F[_], R] = cats.data.EitherT[F, Throwable, R]
   val AttemptT: cats.data.EitherT.type = cats.data.EitherT
 
-  /** !!! N.B. !!!
-    * NEVER, EVER wildcard import this, AND, cats.implicits, or anything from the cats packages.
+  /** !!! N.B. !!! NEVER, EVER wildcard import this, AND, cats.implicits, or anything from the cats packages.
     *
-    * This object is meant to bring in everything that is in cats + some extra, without burdening
-    * the user with two different imports.
+    * This object is meant to bring in everything that is in cats + some extra, without burdening the user with two
+    * different imports.
     */
   @scala.annotation.nowarn
   object implicits extends PureharmEffectsImplicits

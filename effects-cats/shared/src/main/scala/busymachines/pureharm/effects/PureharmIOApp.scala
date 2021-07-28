@@ -18,8 +18,8 @@ package busymachines.pureharm.effects
 
 trait PureharmIOApp extends IOApp {
 
-  /** We want to ensure that this is evaluated only once, otherwise we introduce
-    * too many possibilities of shooting oneself in the foot.
+  /** We want to ensure that this is evaluated only once, otherwise we introduce too many possibilities of shooting
+    * oneself in the foot.
     *
     * {{{
     * //created by mixing in the pureharm goodies
@@ -42,12 +42,10 @@ trait PureharmIOApp extends IOApp {
     */
   val ioRuntime: Later[(ContextShift[IO], Timer[IO])]
 
-  /**
-    */
+  /** */
   override protected def contextShift: ContextShift[IO] = ioRuntime.value._1
 
-  /** Removing implicitness brought in by IOApp, to make it clearer
-    * what's going on.
+  /** Removing implicitness brought in by IOApp, to make it clearer what's going on.
     */
   override protected def timer: Timer[IO] = ioRuntime.value._2
 
