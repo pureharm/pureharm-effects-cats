@@ -71,4 +71,7 @@ trait PureharmEffectsTypeDefinitions {
 
   type PureharmIOApp = busymachines.pureharm.effects.PureharmIOApp
 
+  type Random[F[_]] = busymachines.pureharm.capabilities.Random[F]
+  val Random: busymachines.pureharm.capabilities.Random.type = busymachines.pureharm.capabilities.Random
+
 }

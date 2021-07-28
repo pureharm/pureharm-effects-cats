@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is the first release for a stable Scala 3 version!
 
-### New Scala versions:
+### new features
+- add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation
+
+### new Scala versions:
 - `2.13.6`
 - `3.0.1` for JVM + JS platforms
 - drop `3.0.0-RC2`, `3.0.0-RC3`
