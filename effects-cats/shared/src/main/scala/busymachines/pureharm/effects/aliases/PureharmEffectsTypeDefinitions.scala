@@ -31,25 +31,6 @@ trait PureharmEffectsTypeDefinitions {
   type AttemptT[F[_], R] = effects.AttemptT[F, R]
   val AttemptT: effects.AttemptT.type = effects.AttemptT
 
-  /** Useful since we don't have partial kind application by default Usage:
-    * {{{
-    *   def canFail[F[_]: ApplicativeAttempt, T](p1: T) : F[T] = ???
-    * }}}
-    */
-  @scala.deprecated("Use ApplicativeThrow instead", "0.1.0")
-  type ApplicativeAttempt[F[_]] = cats.ApplicativeError[F, Throwable]
-
-  /** Useful since we don't have partial kind application by default Usage:
-    * {{{
-    *   def canFail[F[_]: MonadAttempt, T](p1: T) : F[T] = ???
-    * }}}
-    */
-  @scala.deprecated("Use MonadThrow instead", "0.1.0")
-  type MonadAttempt[F[_]] = cats.MonadError[F, Throwable]
-
-  @scala.deprecated("Use BracketThrow instead", "0.1.0")
-  type BracketAttempt[F[_]] = cats.effect.Bracket[F, Throwable]
-
   val BracketThrow: busymachines.pureharm.effects.BracketThrow.type = busymachines.pureharm.effects.BracketThrow
 
   /** Used to block on an F[A], and ensure that all recovery and shifting back is always done.

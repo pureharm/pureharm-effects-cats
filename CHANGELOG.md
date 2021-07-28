@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is the first release for a stable Scala 3 version!
 
+### :warning: removed deprecations
+- removed `busymachines.pureharm.effects.PureharmEffectsImplicits`
+- removed Applicative/Monad/Bracket Attempt type aliases
+
 ### new features
 - add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation
 
