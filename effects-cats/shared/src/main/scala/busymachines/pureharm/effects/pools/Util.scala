@@ -21,8 +21,10 @@ import java.util.concurrent.{ExecutorService, ThreadFactory}
 import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 15 Jun 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 15
+  *   Jun 2019
   */
 private[pureharm] object Util {
 

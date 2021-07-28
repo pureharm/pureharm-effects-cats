@@ -18,13 +18,12 @@
 //============================== build details ================================
 //=============================================================================
 
-addCommandAlias("github-gen", "githubWorkflowGenerate")
-addCommandAlias("github-check", "githubWorkflowCheck")
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-val Scala213  = "2.13.5"
-val Scala3RC1 = "3.0.0-RC1"
-val Scala3RC2 = "3.0.0-RC2"
+// format: off
+val Scala213    = "2.13.6"
+val Scala3      = "3.0.1"
+// format: on
 
 //=============================================================================
 //============================ publishing details =============================
@@ -33,10 +32,10 @@ val Scala3RC2 = "3.0.0-RC2"
 //see: https://github.com/xerial/sbt-sonatype#buildsbt
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 
-ThisBuild / baseVersion  := "0.4"
-ThisBuild / organization := "com.busymachines"
+ThisBuild / baseVersion      := "0.5"
+ThisBuild / organization     := "com.busymachines"
 ThisBuild / organizationName := "BusyMachines"
-ThisBuild / homepage     := Option(url("https://github.com/busymachines/pureharm-effects-cats"))
+ThisBuild / homepage         := Option(url("https://github.com/busymachines/pureharm-effects-cats"))
 
 ThisBuild / scmInfo := Option(
   ScmInfo(
@@ -45,8 +44,8 @@ ThisBuild / scmInfo := Option(
   )
 )
 
-/** I want my email. So I put this here. To reduce a few lines of code,
-  * the sbt-spiewak plugin generates this (except email) from these two settings:
+/** I want my email. So I put this here. To reduce a few lines of code, the sbt-spiewak plugin generates this (except
+  * email) from these two settings:
   * {{{
   * ThisBuild / publishFullName   := "Loránd Szakács"
   * ThisBuild / publishGithubUser := "lorandszakacs"
@@ -61,7 +60,7 @@ ThisBuild / developers := List(
   )
 )
 
-ThisBuild / startYear := Some(2019)
+ThisBuild / startYear  := Some(2019)
 ThisBuild / licenses   := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
 //until we get to 1.0.0, we keep strictSemVer false
@@ -71,13 +70,12 @@ ThisBuild / spiewakMainBranches       := List("main")
 ThisBuild / Test / publishArtifact    := false
 
 ThisBuild / scalaVersion       := Scala213
-ThisBuild / crossScalaVersions := List(Scala213, Scala3RC1, Scala3RC2)
+ThisBuild / crossScalaVersions := List(Scala213, Scala3)
 
 //required for binary compat checks
 ThisBuild / versionIntroduced := Map(
-  Scala213  -> "0.1.0",
-  Scala3RC1 -> "0.1.0",
-  Scala3RC2 -> "0.2.0",
+  Scala213 -> "0.1.0",
+  Scala3   -> "0.5.0",
 )
 
 //=============================================================================
@@ -87,11 +85,11 @@ ThisBuild / resolvers += Resolver.sonatypeRepo("releases")
 ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
 // format: off
-val catsV            = "2.5.0"       //https://github.com/typelevel/cats/releases
-val catsEffectV      = "2.4.1"       //https://github.com/typelevel/cats-effect/releases
-val fs2V             = "2.5.4"       //https://github.com/typelevel/fs2/releases
-val pureharmCoreV    = "0.2.0"       //https://github.com/busymachines/pureharm-core/releases
-val munitCE2V        = "1.0.1"       //https://github.com/typelevel/munit-cats-effect/releases
+val catsV            = "2.6.1"       //https://github.com/typelevel/cats/releases
+val catsEffectV      = "2.5.2"       //https://github.com/typelevel/cats-effect/releases
+val fs2V             = "2.5.9"       //https://github.com/typelevel/fs2/releases
+val pureharmCoreV    = "0.3.0"       //https://github.com/busymachines/pureharm-core/releases
+val munitCE2V        = "1.0.5"       //https://github.com/typelevel/munit-cats-effect/releases
 // format: on
 //=============================================================================
 //============================== Project details ==============================
@@ -105,26 +103,28 @@ lazy val root = project
   )
   .enablePlugins(NoPublishPlugin)
   .enablePlugins(SonatypeCiReleasePlugin)
-  .settings(commonSettings)
+  .settings(
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+  )
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
-  .settings(commonSettings)
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
+  .settings(
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+  )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
   .settings(
     name := "pureharm-effects-cats",
     libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core" % catsV withSources(),
-      "org.typelevel" %%% "cats-effect" % catsEffectV withSources(),
-      
-      "co.fs2" %%% "fs2-core" % fs2V withSources(),
-      
-      "com.busymachines" %%% "pureharm-core-anomaly" % pureharmCoreV withSources(),
-      "com.busymachines" %%% "pureharm-core-sprout" % pureharmCoreV withSources(),
-      
-      "org.typelevel" %%% "munit-cats-effect-2" % munitCE2V % Test withSources(),
+      // format: off
+      "org.typelevel"       %%% "cats-core"                   % catsV                    withSources(),
+      "org.typelevel"       %%% "cats-effect"                 % catsEffectV              withSources(),
+      "co.fs2"              %%% "fs2-core"                    % fs2V                     withSources(),
+      "com.busymachines"    %%% "pureharm-core-anomaly"       % pureharmCoreV            withSources(),
+      "com.busymachines"    %%% "pureharm-core-sprout"        % pureharmCoreV            withSources(),
+      "org.typelevel"       %%% "munit-cats-effect-2"         % munitCE2V         % Test withSources(),
+      // format: on
     ),
   )
 
@@ -138,20 +138,11 @@ lazy val `effects-catsJS` = `effects-cats`.js
 //================================= Settings ==================================
 //=============================================================================
 
-lazy val commonSettings = Seq(
-  //required for munit: https://scalameta.org/munit/docs/getting-started.html
-  testFrameworks += new TestFramework("munit.Framework"),
-
-  Compile / unmanagedSourceDirectories ++= {
-    val major = if (isDotty.value) "-3" else "-2"
-    List(CrossType.Pure, CrossType.Full).flatMap(
-      _.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + major))
-    )
-  },
-  Test / unmanagedSourceDirectories ++= {
-    val major = if (isDotty.value) "-3" else "-2"
-    List(CrossType.Pure, CrossType.Full).flatMap(
-      _.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + major))
-    )
-  },
-)
+def scalaCompilerOptions(scalaVersion: String): Seq[String] =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, _)) =>
+      Seq[String](
+        //"-Xsource:3"
+      )
+    case _            => Seq.empty[String]
+  }

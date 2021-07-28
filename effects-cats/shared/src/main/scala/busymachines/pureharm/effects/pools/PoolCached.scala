@@ -21,8 +21,10 @@ import java.util.concurrent._
 import busymachines.pureharm.effects.pools.ExecutionContextCT
 import cats.effect._
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 15 Jun 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 15
+  *   Jun 2019
   */
 private[pureharm] object PoolCached {
 

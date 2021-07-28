@@ -28,8 +28,10 @@ import scala.util.control.NonFatal
 import scala.collection.BuildFrom
 import fs2._
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 10 May 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 10
+  *   May 2019
   */
 object PureharmSyntax {
 
@@ -66,8 +68,8 @@ object PureharmSyntax {
 
   final class FOps[F[_], A] private[PureharmSyntax] (val fa: F[A]) extends AnyVal {
 
-    /** Wraps any non-anomaly as an UnhandledCatastrophe, this usually signals
-      * a bug, as pureharm encourages that any throwables be such anomalies.
+    /** Wraps any non-anomaly as an UnhandledCatastrophe, this usually signals a bug, as pureharm encourages that any
+      * throwables be such anomalies.
       */
     def attemptAnomaly(implicit F: ApplicativeThrow[F]): F[Either[AnomalyLike, A]] =
       F.map(
@@ -192,8 +194,7 @@ object PureharmSyntax {
 
   //--------------------------- Future --------------------------
 
-  /** The scala standard library is extremely annoying because
-    * various effects don't have similar syntax for essentially
+  /** The scala standard library is extremely annoying because various effects don't have similar syntax for essentially
     * the same operation.
     */
   final class FuturePseudoCompanionOps private[PureharmSyntax] (val companion: Future.type) extends AnyVal {
@@ -205,46 +206,44 @@ object PureharmSyntax {
     //=============================== Traversals ==============================
     //=========================================================================
 
-    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.traverse
+      * @see
+      *   scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](in: Seq[A])(fn: A => Future[B])(implicit ec: ExecutionContext): Future[Unit] =
       FutureOps.traverse_(in)(fn)
 
-    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.traverse
+      * @see
+      *   scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](in: Set[A])(fn: A => Future[B])(implicit ec: ExecutionContext): Future[Unit] =
       FutureOps.traverse_(in)(fn)
 
-    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.sequence
+      * @see
+      *   scala.concurrent.Future.sequence
       */
     @inline def sequence_[A](in: Seq[Future[A]])(implicit ec: ExecutionContext): Future[Unit] =
       FutureOps.sequence_(in)
 
-    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.sequence
+      * @see
+      *   scala.concurrent.Future.sequence
       */
     @inline def sequence_[A](in: Set[Future[A]])(implicit ec: ExecutionContext): Future[Unit] =
       FutureOps.sequence_(in)
 
-    /** Syntactically inspired from Future.traverse, but it differs semantically
-      * insofar as this method does not attempt to run any futures in parallel. "M" stands
-      * for "monadic", as opposed to "applicative" which is the foundation for the formal definition
-      * of "traverse" (even though in Scala it is by accident-ish)
+    /** Syntactically inspired from Future.traverse, but it differs semantically insofar as this method does not attempt
+      * to run any futures in parallel. "M" stands for "monadic", as opposed to "applicative" which is the foundation
+      * for the formal definition of "traverse" (even though in Scala it is by accident-ish)
       *
-      * For the vast majority of cases you should prefer this method over Future.sequence
-      * and Future.traverse, since even small collections can easily wind up queuing so many
-      * Futures that you blow your execution context.
+      * For the vast majority of cases you should prefer this method over Future.sequence and Future.traverse, since
+      * even small collections can easily wind up queuing so many Futures that you blow your execution context.
       *
       * Usage:
       * {{{
@@ -265,10 +264,10 @@ object PureharmSyntax {
       ec:                                                     ExecutionContext,
     ): Future[C[B]] = FutureOps.serialize(col)(fn)
 
-    /** @see serialize
+    /** @see
+      *   serialize
       *
-      * Similar to serialize, but discards all content. i.e. used only
-      * for the combined effects.
+      * Similar to serialize, but discards all content. i.e. used only for the combined effects.
       */
     @inline def serialize_[A, B, C[X] <: IterableOnce[X]](col: C[A])(fn: A => Future[B])(implicit
       cbf:                                                     BuildFrom[C[A], B, C[B]],
@@ -291,54 +290,52 @@ object PureharmSyntax {
       */
     @inline def unsafeRunSync[A](f: Future[A], atMost: Duration = Duration.Inf): A = Await.result(f, atMost)
 
-    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.traverse
+      * @see
+      *   scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](
       in: Seq[A]
     )(fn: A => Future[B])(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.traverse(in)(fn))
 
-    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.traverse, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.traverse
+      * @see
+      *   scala.concurrent.Future.traverse
       */
     @inline def traverse_[A, B](
       in: Set[A]
     )(fn: A => Future[B])(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.traverse(in)(fn))
 
-    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.sequence
+      * @see
+      *   scala.concurrent.Future.sequence
       */
     @inline def sequence_[A, To](
       in:                Seq[Future[A]]
     )(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.sequence(in))
 
-    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only
-      * for the combined effects.
+    /** Similar to scala.concurrent.Future.sequence, but discards all content. i.e. used only for the combined effects.
       *
-      * @see scala.concurrent.Future.sequence
+      * @see
+      *   scala.concurrent.Future.sequence
       */
     @inline def sequence_[A, To](
       in:                Set[Future[A]]
     )(implicit executor: ExecutionContext): Future[Unit] =
       this.void(Future.sequence(in))
 
-    /** Syntactically inspired from Future.traverse, but it differs semantically
-      * insofar as this method does not attempt to run any futures in parallel. "M" stands
-      * for "monadic", as opposed to "applicative" which is the foundation for the formal definition
-      * of "traverse" (even though in Scala it is by accident-ish)
+    /** Syntactically inspired from Future.traverse, but it differs semantically insofar as this method does not attempt
+      * to run any futures in parallel. "M" stands for "monadic", as opposed to "applicative" which is the foundation
+      * for the formal definition of "traverse" (even though in Scala it is by accident-ish)
       *
-      * For the vast majority of cases you should prefer this method over Future.sequence
-      * and Future.traverse, since even small collections can easily wind up queuing so many
-      * Futures that you blow your execution context.
+      * For the vast majority of cases you should prefer this method over Future.sequence and Future.traverse, since
+      * even small collections can easily wind up queuing so many Futures that you blow your execution context.
       *
       * Usage:
       * {{{
@@ -378,10 +375,10 @@ object PureharmSyntax {
       }
     }
 
-    /** @see serialize
+    /** @see
+      *   serialize
       *
-      * Similar to serialize, but discards all content. i.e. used only
-      * for the combined effects.
+      * Similar to serialize, but discards all content. i.e. used only for the combined effects.
       */
     @inline def serialize_[A, B, M[X] <: IterableOnce[X]](
       in: M[A]
@@ -394,38 +391,30 @@ object PureharmSyntax {
   final class PureharmTimedAttemptReattemptSyntaxOps[F[_], A](val fa: F[A]) extends AnyVal {
 
     /** @param unit
-      *   You probably don't want a granularity larger than MILLISECONDS
-      *   for accurate timing.
+      *   You probably don't want a granularity larger than MILLISECONDS for accurate timing.
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the Attempt,
-      *  times both success and failure case.
+      *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
     def timedAttempt(
       unit:       TimeUnit = MILLISECONDS
     )(implicit F: MonadThrow[F], timer: Timer[F]): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps.timedAttempt(unit)(fa)
 
-    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until
-      * it is not failed. Between each retry it waits ``betweenRetries``.
-      * It also measures the time elapsed in total.
+    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
+      * ``betweenRetries``. It also measures the time elapsed in total.
       *
       * @param errorLog
-      *   Use this to specify how to log any error that happens within
-      *   your ``fa``, and any error encountered during retries
+      *   Use this to specify how to log any error that happens within your ``fa``, and any error encountered during
+      *   retries
       * @param timeUnit
-      *   You probably don't want a granularity larger than MILLISECONDS
-      *   for accurate timing.
+      *   You probably don't want a granularity larger than MILLISECONDS for accurate timing.
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the Attempt,
-      *  times all successes and failures, and returns their sum.
-      *  N.B.
-      *  It only captures the latest failure, if it encounters one.
+      *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
+      *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
     def timedReattempt(
       errorLog:       (Throwable, String) => F[Unit],
@@ -453,19 +442,16 @@ object PureharmSyntax {
       PureharmTimedAttemptReattemptSyntaxOps
         .timedReattempt(PureharmTimedAttemptReattemptSyntaxOps.noLog[F], timeUnit)(retries, betweenRetries)(fa)
 
-    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until
-      * it is not failed. Between each retry it waits ``betweenRetries``.
-      * It also measures the time elapsed in total.
+    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
+      * ``betweenRetries``. It also measures the time elapsed in total.
       *
       * @param errorLog
-      *   Use this to specify how to log any error that happens within
-      *   your ``fa``, and any error encountered during retries
+      *   Use this to specify how to log any error that happens within your ``fa``, and any error encountered during
+      *   retries
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *   N.B.
-      *   It only captures the latest failure, if it encounters one.
+      *   N.B. It only captures the latest failure, if it encounters one.
       */
     def reattempt(
       errorLog:       (Throwable, String) => F[Unit]
@@ -494,14 +480,11 @@ object PureharmSyntax {
     import scala.concurrent.duration._
 
     /** @param timeUnit
-      *   You probably don't want a granularity larger than MILLISECONDS
-      *   for accurate timing.
+      *   You probably don't want a granularity larger than MILLISECONDS for accurate timing.
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the Attempt,
-      *  times both success and failure case.
+      *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
     def timedAttempt[F[_], A](
       timeUnit:   TimeUnit
@@ -514,24 +497,19 @@ object PureharmSyntax {
         end   <- realTime(timeUnit)(F, timer)
       } yield (end.minus(start), att)
 
-    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until
-      * it is not failed. Between each retry it waits ``betweenRetries``.
-      * It also measures the time elapsed in total.
+    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
+      * ``betweenRetries``. It also measures the time elapsed in total.
       *
       * @param errorLog
-      *   Use this to specify how to log any error that happens within
-      *   your ``fa``, and any error encountered during retries
+      *   Use this to specify how to log any error that happens within your ``fa``, and any error encountered during
+      *   retries
       * @param timeUnit
-      *   You probably don't want a granularity larger than MILLISECONDS
-      *   for accurate timing.
+      *   You probably don't want a granularity larger than MILLISECONDS for accurate timing.
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *  Never fails and captures the failure of the ``fa`` within the Attempt,
-      *  times all successes and failures, and returns their sum.
-      *  N.B.
-      *  It only captures the latest failure, if it encounters one.
+      *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
+      *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
     def timedReattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit],
@@ -569,19 +547,16 @@ object PureharmSyntax {
       recursiveRetry(fa)(retries, 0.seconds)
     }
 
-    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until
-      * it is not failed. Between each retry it waits ``betweenRetries``.
-      * It also measures the time elapsed in total.
+    /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
+      * ``betweenRetries``. It also measures the time elapsed in total.
       *
       * @param errorLog
-      *   Use this to specify how to log any error that happens within
-      *   your ``fa``, and any error encountered during retries
+      *   Use this to specify how to log any error that happens within your ``fa``, and any error encountered during
+      *   retries
       *
-      *   N.B. you can also use FiniteDuration.toCoarsest to then obtain
-      *   a more human friendly measurement as possible
+      * N.B. you can also use FiniteDuration.toCoarsest to then obtain a more human friendly measurement as possible
       * @return
-      *   N.B.
-      *   It only captures the latest failure, if it encounters one.
+      *   N.B. It only captures the latest failure, if it encounters one.
       */
     def reattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit]

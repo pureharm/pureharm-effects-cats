@@ -18,8 +18,10 @@ package busymachines.pureharm.effects
 
 import busymachines.pureharm.sprout._
 
-/** @author Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 15 Jun 2019
+/** @author
+  *   Lorand Szakacs, https://github.com/lorandszakacs
+  * @since 15
+  *   Jun 2019
   */
 package object pools {
   object ExecutionContextFT extends SproutSub[ExecutionContext]
@@ -38,12 +40,9 @@ package object pools {
   type ExecutionContextCT = ExecutionContextCT.Type
 
   object ExecutionContextMainFT extends SproutSub[ExecutionContext]
-  /** Similar to ExecutionContextFT, except that it guarantees
-    * that we have two threads, and it's specially designated
-    * as the pool on which most (most of the time all) CPU bound
-    * computation should be done in our apps, and the pool
-    * underlying instances of cats.effect.ContextShift and
-    * cats.effect.Timer
+  /** Similar to ExecutionContextFT, except that it guarantees that we have two threads, and it's specially designated
+    * as the pool on which most (most of the time all) CPU bound computation should be done in our apps, and the pool
+    * underlying instances of cats.effect.ContextShift and cats.effect.Timer
     */
   type ExecutionContextMainFT = ExecutionContextMainFT.Type
 }

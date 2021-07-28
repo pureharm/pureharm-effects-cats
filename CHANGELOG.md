@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
+This is the first release for a stable Scala 3 version!
+
+### New Scala versions:
+- `2.13.6`
+- `3.0.1` for JVM + JS platforms
+- drop `3.0.0-RC2`, `3.0.0-RC3`
+
+### Version upgrades:
+- [cats](https://github.com/typelevel/cats) `2.6.1`
+- [cats-effect](https://github.com/typelevel/cats-effect) `2.5.2`
+- [fs2-core](https://github.com/typelevel/fs2) `2.5.9`
+- [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
+- [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
+
+### internals
+- bump [munit-cats-effect](https://github.com/typelevel/munit-cats-effect/releases) to `1.0.5`
+- bump scalafmt to `3.0.0-RC6` — from `2.7.5`
+- bump sbt to `1.5.5`
+- bump sbt-spiewak to `0.21.0`
+- bump sbt-scalafmt to `2.4.3`
+- bump sbt-scalajs-crossproject to `1.1.0`
+- bump sbt-scalajs to `1.6.0`
+
 # 0.4.0
 
 - add a bunch of missing aliases from cats
