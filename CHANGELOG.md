@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is the first release for a stable Scala 3 version!
 
 ### :warning: breaking changes :warning
-- the module based on `cats-effect 2` is now named `pureharm-effects-cats-2`, so if you did not yet upgrade your entire stack to cats-effect 3 then use this module. `pureharm-effects-cats` now refers to the module version based on cats-effect 3.
+- the module from version 0.4.0 is now named `pureharm-effects-cats-2`, so if you did not yet upgrade your entire stack to cats-effect 3 then use this module. `pureharm-effects-cats` now refers to the module version based on cats-effect 3.
 
 ### :warning: removed deprecations
 - removed `busymachines.pureharm.effects.PureharmEffectsImplicits`
