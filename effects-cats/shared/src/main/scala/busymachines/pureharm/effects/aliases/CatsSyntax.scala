@@ -20,7 +20,7 @@ import cats.syntax
 
 // format: off
 trait CatsSyntax
-  extends cats.effect.syntax.AllCatsEffectSyntax
+  extends cats.effect.syntax.AllSyntax
   with syntax.AllSyntax
   with syntax.AllSyntaxBinCompat0
   with syntax.AllSyntaxBinCompat1

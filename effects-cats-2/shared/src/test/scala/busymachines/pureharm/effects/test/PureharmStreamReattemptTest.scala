@@ -24,21 +24,24 @@ import munit._
 
 final class PureharmStreamReattemptTest extends CatsEffectSuite {
 
+  implicit private val cs:    ContextShift[IO] = IO.contextShift(scala.concurrent.ExecutionContext.global)
+  implicit private val timer: Timer[IO]        = IO.timer(scala.concurrent.ExecutionContext.global)
+
   import scala.concurrent.duration._
 
   private def failWhenEval(maxEmits: Long, numberOfStreams: Ref[IO, Int]): IO[(IO[Unit], Stream[IO, Long])] =
     for {
-      queue <- Queue.unbounded[IO, Option[Option[Throwable]]]
-      failWhen = queue.offer(Option(Option(InconsistentStateCatastrophe("""Stopped the stream"""): Throwable)))
+      queue <- Queue.noneTerminated[IO, Option[Throwable]]
+      failWhen = queue.enqueue1(Option(Option(InconsistentStateCatastrophe("""Stopped the stream"""): Throwable)))
       _ <- Stream
         .awakeEvery[IO](10.millis)
         .zipWithIndex
         .evalMap(t =>
           if (t._2 >= maxEmits) {
-            queue.offer(Option.empty)
+            queue.enqueue1(Option.empty)
           }
           else {
-            queue.offer(Option(Option.empty))
+            queue.enqueue1(Option(Option.empty))
           }
         )
         .compile
@@ -48,8 +51,7 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
     } yield (
       failWhen,
       Stream.eval(numberOfStreams.update(i => i + 1)).flatMap { _ =>
-        Stream
-          .fromQueueNoneTerminated(queue)
+        queue.dequeue
           .evalMap {
             case None    => ().pure[IO]
             case Some(e) => e.raiseError[IO, Unit]
@@ -86,7 +88,7 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
       numberOfStreamsRef <- Ref.of[IO, Int](0)
       t                  <- failWhenEval(maxEmits = 100, numberOfStreams = numberOfStreamsRef)
       (failStream, stream) = t
-      fiber <- stream
+      fiber   <- stream
         .reattempt(
           errorLog = (_, _) => IO(println("Failed stream"))
         )(
@@ -96,15 +98,10 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
         .compile
         .drain
         .start
-      _     <- failStream
+      _       <- failStream
+      attempt <- fiber.join.attempt
 
-      outcome <- fiber.join
-
-      _          <- outcome match {
-        case Outcome.Canceled()   => IO(fail("stream cancelled expected failure")).void
-        case Outcome.Succeeded(_) => IO(fail(s"stream succeeded, but we expected failure")).void
-        case Outcome.Errored(e)   => IO(intercept[InconsistentStateCatastrophe](throw e)).void
-      }
+      _ = intercept[InconsistentStateCatastrophe](attempt.unsafeGet())
       nrOfStream <- numberOfStreamsRef.get
     } yield assertEquals(nrOfStream, 1)
   }
@@ -126,12 +123,9 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
         .start
       _     <- failStream
 
-      outcome    <- fiber.join
-      _          <- outcome match {
-        case Outcome.Canceled()   => IO(fail("stream cancelled expected success")).void
-        case Outcome.Succeeded(_) => IO.unit
-        case Outcome.Errored(e)   => IO(fail(s"stream errored out w/ $e. expected success")).void
-      }
+      attempt <- fiber.join.attempt
+
+      _ = assertEquals(attempt, ().pure[Attempt])
       nrOfStream <- numberOfStreamsRef.get
     } yield assertEquals(nrOfStream, 2)
   }
@@ -141,7 +135,7 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
       numberOfStreamsRef <- Ref.of[IO, Int](0)
       t                  <- failWhenEval(maxEmits = 20, numberOfStreams = numberOfStreamsRef)
       (failStream, stream) = t
-      fiber       <- stream
+      fiber   <- stream
         .reattempt(
           errorLog = (_, _) => IO(println("Failed stream"))
         )(
@@ -151,15 +145,12 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
         .compile
         .drain
         .start
-      _           <- failStream
-      _           <- Temporal[IO].sleep(100.millis)
-      _           <- failStream
-      outcome     <- fiber.join
-      _           <- outcome match {
-        case Outcome.Canceled()   => IO(fail("stream cancelled expected success")).void
-        case Outcome.Succeeded(_) => IO.unit
-        case Outcome.Errored(e)   => IO(fail(s"stream errored out w/ $e. expected success")).void
-      }
+      _       <- failStream
+      _       <- Timer[IO].sleep(100.millis)
+      _       <- failStream
+      attempt <- fiber.join.attempt
+
+      _ = assertEquals(attempt, ().pure[Attempt])
       nrOfStreams <- numberOfStreamsRef.get
     } yield assertEquals(nrOfStreams, 3)
   }
@@ -181,12 +172,9 @@ final class PureharmStreamReattemptTest extends CatsEffectSuite {
         .drain
         .start
 
-      outcome     <- fiber.join
-      _           <- outcome match {
-        case Outcome.Canceled()   => IO(fail("stream cancelled expected failure")).void
-        case Outcome.Succeeded(_) => IO(fail(s"stream succeeded, but we expected failure")).void
-        case Outcome.Errored(e)   => IO(intercept[InconsistentStateCatastrophe](throw e)).void
-      }
+      attempt <- fiber.join.attempt
+
+      _ = intercept[InconsistentStateCatastrophe](attempt.unsafeGet())
       nrOfStreams <- numberOfStreamsRef.get
     } yield assertEquals(nrOfStreams, 4)
   }

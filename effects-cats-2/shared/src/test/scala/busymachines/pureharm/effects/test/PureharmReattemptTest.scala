@@ -24,6 +24,9 @@ import scala.concurrent.duration._
 
 final class PureharmReattemptTest extends CatsEffectSuite {
 
+  implicit private val cs:    ContextShift[IO] = IO.contextShift(scala.concurrent.ExecutionContext.global)
+  implicit private val timer: Timer[IO]        = IO.timer(scala.concurrent.ExecutionContext.global)
+
   test("reattempt — succeed on first try") {
     for {
       firstTry <- Ref.of[IO, Int](0)
@@ -52,7 +55,7 @@ final class PureharmReattemptTest extends CatsEffectSuite {
 
   private def succeedAfter(tries: Ref[IO, Int]): IO[Unit] =
     for {
-      _          <- Temporal[IO].sleep(10.millis)
+      _          <- timer.sleep(10.millis)
       triesSoFar <- tries.getAndUpdate(soFar => soFar - 1)
       _          <- IO(println(s"try countdown: #$triesSoFar"))
       _          <-

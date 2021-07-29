@@ -87,7 +87,7 @@ object Random extends PlatformSpecificRandom {
     }
   }
 
-  implicit def randomForResource[F[_]](implicit random: Random[F]): Random[Resource[F, *]] =
+  implicit def randomForResource[F[_]: Applicative](implicit random: Random[F]): Random[Resource[F, *]] =
     random.mapK(Resource.liftK[F])
 
 }

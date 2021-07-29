@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package busymachines.pureharm.effects.aliases
+package busymachines.pureharm.capabilities
 
-import busymachines.pureharm.effects
+import scala.util.{Random => ScalaRandom}
 
-/** @author
-  *   Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 13
-  *   Jun 2019
-  */
-trait PureharmEffectsTypeDefinitions {
+import busymachines.pureharm.effects._
+import cats.syntax.all._
 
-  //----------- handy custom types -----------
-  type Attempt[+R] = effects.Attempt[R]
+trait PlatformSpecificRandom {
 
-  type AttemptT[F[_], R] = effects.AttemptT[F, R]
-  val AttemptT: effects.AttemptT.type = effects.AttemptT
+  /** Provides a Random[F] instance backed up by a java.util.security.SecureRandom()
+    *
+    * Available only on JVM, JS does not have secure random.
+    */
+  def secureRandom[F[_]](implicit F: Sync[F]): Random[F] = new RandomImpl[F] {
 
-  type Random[F[_]] = busymachines.pureharm.capabilities.Random[F]
-  val Random: busymachines.pureharm.capabilities.Random.type = busymachines.pureharm.capabilities.Random
-
+    override protected val randomF: F[ScalaRandom] = {
+      for {
+        javaTLR <- F.delay(new java.security.SecureRandom)
+      } yield new ScalaRandom(javaTLR)
+    }
+  }
 }

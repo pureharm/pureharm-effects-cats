@@ -25,6 +25,36 @@ import busymachines.pureharm.effects.pools._
   */
 object UnsafePools {
 
+  /** This is a reasonable default to back up your application's ContextShift. Make sure that you NEVER do blocking I/O
+    * on this thread pool. NEVER! — it's not that hard as long as you respect referential transparency, and are careful
+    * with using 3rd party libraries (especially Java ones).
+    *
+    * Additionally, we can't really instantiate one of these in a resource "safe" manner, because we need it for the
+    * cats.effect.IOApp.
+    *
+    * Instantiates a fixed thread pool with the maximum threads being equal to the number of available processors
+    * available to the JVM (N.B., this number can be less than what your hardware offers), and a minimum of two threads
+    * in order to, quoting cats-effect:
+    *
+    * "lower-bound of 2 to prevent pathological deadlocks on virtual machines"
+    *
+    * See: https://github.com/typelevel/cats-effect/pull/547
+    *
+    * @param threadNamePrefix
+    *   prefixes this name to the ThreadID. This is the name that usually shows up in the logs. It also prefixes the
+    *   total number of threads in the thread pool in the name.
+    * @return
+    *   A fixed thread pool with at least two fixed threads, or the number of available processors.
+    */
+  def defaultMainExecutionContext(threadNamePrefix: String = "main-cpu-fixed"): ExecutionContextMainFT =
+    PoolMainCPU.default(threadNamePrefix)
+
+  /** Like defaultMainExecutionContext, but with a custom upper bound for threads, instead one based on the number of
+    * available processors
+    */
+  def mainExecutionContext(threadNamePrefix: String = "main-cpu-fixed", maxThreads: Int): ExecutionContextMainFT =
+    PoolMainCPU.main(threadNamePrefix, maxThreads)
+
   /** !!! WARNING !!! Prefer Pools.fixed, unless you know what you are doing. The behavior the the Execution context
     * itself is the same for both, but the former is actually safer to use :)
     * -----

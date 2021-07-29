@@ -17,79 +17,168 @@
 package busymachines.pureharm.effects.aliases
 
 import cats.{effect => ce}
+import cats.effect.{kernel => cekernel}
 
 trait CatsEffectAliases {
 
   //----------- cats-effect types -----------
-  final type Sync[F[_]] = ce.Sync[F]
-  final val Sync: ce.Sync.type = ce.Sync
+  type Outcome[F[_], E, A] = cekernel.Outcome[F, E, A]
+  val Outcome: cekernel.Outcome.type = cekernel.Outcome
 
-  final type Async[F[_]] = ce.Async[F]
-  final val Async: ce.Async.type = ce.Async
+  type MonadCancel[F[_], E] = cekernel.MonadCancel[F, E]
+  val MonadCancel: cekernel.MonadCancel.type = cekernel.MonadCancel
 
-  final type Effect[F[_]] = ce.Effect[F]
-  final val Effect: ce.Effect.type = ce.Effect
+  @scala.deprecated(
+    "Bracket was removed from cats-effect 3, in pureharm we aliased it to MonadCancel, it's spiritual successor. Please use that instead",
+    "0.5.0",
+  )
+  type Bracket[F[_], E] = cekernel.MonadCancel[F, E]
 
-  final type Concurrent[F[_]] = ce.Concurrent[F]
-  final val Concurrent: ce.Concurrent.type = ce.Concurrent
+  @scala.deprecated(
+    "Bracket was removed from cats-effect 3, in pureharm we aliased it to MonadCancel, it's spiritual successor. Please use that instead",
+    "0.5.0",
+  )
+  def Bracket[F[_], E](implicit F: MonadCancel[F, E]): MonadCancel[F, E] = F
 
-  final type ConcurrentEffect[F[_]] = ce.ConcurrentEffect[F]
-  final val ConcurrentEffect: ce.ConcurrentEffect.type = ce.ConcurrentEffect
+  @scala.deprecated(
+    "BracketThrow was removed from cats-effect 3, in pureharm we aliased it to MonadCancel, it's spiritual successor. Please use that instead",
+    "0.5.0",
+  )
+  type BracketThrow[F[_]] = cekernel.MonadCancelThrow[F]
 
-  final type Timer[F[_]] = ce.Timer[F]
-  final val Timer: ce.Timer.type = ce.Timer
+  @scala.deprecated(
+    "BracketThrow was removed from cats-effect 3, in pureharm we aliased it to MonadCancel, it's spiritual successor. Please use that instead",
+    "0.5.0",
+  )
+  def BracketThrow[F[_]](implicit F: MonadCancelThrow[F]): MonadCancelThrow[F] = F
 
-  final type ContextShift[F[_]] = ce.ContextShift[F]
-  final val ContextShift: ce.ContextShift.type = ce.ContextShift
+  type MonadCancelThrow[F[_]] = cekernel.MonadCancelThrow[F]
+  val MonadCancelThrow: cekernel.MonadCancelThrow.type = cekernel.MonadCancelThrow
 
-  final type Blocker = ce.Blocker
-  final val Blocker: ce.Blocker.type = ce.Blocker
+  type GenSpawn[F[_], E] = cekernel.GenSpawn[F, E]
+  val GenSpawn: cekernel.GenSpawn.type = cekernel.GenSpawn
 
-  final type CancelToken[F[_]] = ce.CancelToken[F]
-  final type Fiber[F[_], A]    = ce.Fiber[F, A]
-  final val Fiber: ce.Fiber.type = ce.Fiber
+  type Fiber[F[_], E, A] = cekernel.Fiber[F, E, A]
+  type Poll[F[_]]        = cekernel.Poll[F]
 
-  final type SyncIO[+A] = ce.SyncIO[A]
-  final val SyncIO: ce.SyncIO.type = ce.SyncIO
+  type GenConcurrent[F[_], E] = cekernel.GenConcurrent[F, E]
+  val GenConcurrent: cekernel.GenConcurrent.type = cekernel.GenConcurrent
 
-  final type IO[+A] = ce.IO[A]
-  final val IO: ce.IO.type = ce.IO
+  type Clock[F[_]] = cekernel.Clock[F]
+  val Clock: cekernel.Clock.type = cekernel.Clock
 
-  final type LiftIO[F[_]] = ce.LiftIO[F]
-  final val LiftIO: ce.LiftIO.type = ce.LiftIO
+  type GenTemporal[F[_], E] = cekernel.GenTemporal[F, E]
+  val GenTemporal: cekernel.GenTemporal.type = cekernel.GenTemporal
 
-  final type IOApp = ce.IOApp
-  final val IOApp: ce.IOApp.type = ce.IOApp
+  type Unique[F[_]] = cekernel.Unique[F]
+  val Unique: cekernel.Unique.type = cekernel.Unique
 
-  final type ExitCode = ce.ExitCode
-  final val ExitCode: ce.ExitCode.type = ce.ExitCode
+  type Sync[F[_]] = cekernel.Sync[F]
+  val Sync: cekernel.Sync.type = cekernel.Sync
 
-  final type Bracket[F[_], E] = ce.Bracket[F, E]
-  final val Bracket: ce.Bracket.type = ce.Bracket
+  type Async[F[_]] = cekernel.Async[F]
+  val Async: cekernel.Async.type = cekernel.Async
 
-  final type BracketThrow[F[_]] = ce.BracketThrow[F]
+  type Spawn[F[_]] = cekernel.Spawn[F]
+  val Spawn: cekernel.Spawn.type = cekernel.Spawn
 
-  final type Resource[F[_], A] = ce.Resource[F, A]
-  final val Resource: ce.Resource.type = ce.Resource
+  type Concurrent[F[_]] = cekernel.Concurrent[F]
+  val Concurrent: cekernel.Concurrent.type = cekernel.Concurrent
 
-  final type ExitCase[+E] = ce.ExitCase[E]
-  final val ExitCase: ce.ExitCase.type = ce.ExitCase
+  type Temporal[F[_]] = cekernel.Temporal[F]
+  val Temporal: cekernel.Temporal.type = cekernel.Temporal
 
-  //----------- cats-effect concurrent -----------
+  type ParallelF[F[_], A] = cekernel.Par.ParallelF[F, A]
+  val ParallelF: cekernel.Par.ParallelF.type = cekernel.Par.ParallelF
 
-  final type Semaphore[F[_]] = ce.concurrent.Semaphore[F]
-  final val Semaphore: ce.concurrent.Semaphore.type = ce.concurrent.Semaphore
+  type Resource[F[_], +A] = cekernel.Resource[F, A]
+  val Resource: cekernel.Resource.type = cekernel.Resource
 
-  final type Deferred[F[_], A] = ce.concurrent.Deferred[F, A]
-  final val Deferred: ce.concurrent.Deferred.type = ce.concurrent.Deferred
+  type OutcomeIO[A]  = ce.Outcome[IO, Throwable, A]
+  type FiberIO[A]    = ce.Fiber[IO, Throwable, A]
+  type ResourceIO[A] = ce.Resource[IO, A]
 
-  final type TryableDeferred[F[_], A] = ce.concurrent.TryableDeferred[F, A]
-  //intentionally has same companion object as Deferred.
-  final val TryableDeferred: ce.concurrent.Deferred.type = ce.concurrent.Deferred
+  type Deferred[F[_], A] = cekernel.Deferred[F, A]
+  val Deferred: cekernel.Deferred.type = cekernel.Deferred
 
-  final type MVar2[F[_], A] = ce.concurrent.MVar2[F, A]
-  final val MVar: ce.concurrent.MVar.type = ce.concurrent.MVar
+  type DeferredSink[F[_], A] = cekernel.DeferredSink[F, A]
+  val DeferredSink: cekernel.DeferredSink.type = cekernel.DeferredSink
 
-  final type Ref[F[_], A] = ce.concurrent.Ref[F, A]
-  final val Ref: ce.concurrent.Ref.type = ce.concurrent.Ref
+  type Ref[F[_], A] = cekernel.Ref[F, A]
+  val Ref: cekernel.Ref.type = cekernel.Ref
+
+  type SyncIO[+A] = ce.SyncIO[A]
+  val SyncIO: ce.SyncIO.type = ce.SyncIO
+
+  type IO[+A] = ce.IO[A]
+  val IO: ce.IO.type = ce.IO
+
+  type LiftIO[F[_]] = ce.LiftIO[F]
+  val LiftIO: ce.LiftIO.type = ce.LiftIO
+
+  type IOApp = ce.IOApp
+  val IOApp: ce.IOApp.type = ce.IOApp
+
+  type ResourceApp = ce.ResourceApp
+  val ResourceApp: ce.ResourceApp.type = ce.ResourceApp
+
+  type ExitCode = ce.ExitCode
+  val ExitCode: ce.ExitCode.type = ce.ExitCode
+
+  //----------- cats-effect std -----------
+
+  type Console[F[_]] = ce.std.Console[F]
+  val Console: ce.std.Console.type = ce.std.Console
+
+  type Semaphore[F[_]] = ce.std.Semaphore[F]
+  val Semaphore: ce.std.Semaphore.type = ce.std.Semaphore
+
+  type CountDownLatch[F[_]] = ce.std.CountDownLatch[F]
+  val CountDownLatch: ce.std.CountDownLatch.type = ce.std.CountDownLatch
+
+  type CyclicBarrier[F[_]] = ce.std.CyclicBarrier[F]
+  val CyclicBarrier: ce.std.CyclicBarrier.type = ce.std.CyclicBarrier
+
+  type Hotswap[F[_], R] = ce.std.Hotswap[F, R]
+  val Hotswap: ce.std.Hotswap.type = ce.std.Hotswap
+
+  type Queue[F[_], A] = ce.std.Queue[F, A]
+  val Queue: ce.std.Queue.type = ce.std.Queue
+
+  type QueueSink[F[_], A] = ce.std.QueueSink[F, A]
+  val QueueSink: ce.std.QueueSink.type = ce.std.QueueSink
+
+  type QueueSource[F[_], A] = ce.std.QueueSource[F, A]
+  val QueueSource: ce.std.QueueSource.type = ce.std.QueueSource
+
+  type Dequeue[F[_], A] = ce.std.Dequeue[F, A]
+  val Dequeue: ce.std.Dequeue.type = ce.std.Dequeue
+
+  type DequeueSink[F[_], A] = ce.std.DequeueSink[F, A]
+  val DequeueSink: ce.std.DequeueSink.type = ce.std.DequeueSink
+
+  type DequeueSource[F[_], A] = ce.std.DequeueSource[F, A]
+  val DequeueSource: ce.std.DequeueSource.type = ce.std.DequeueSource
+
+  type PQueue[F[_], A] = ce.std.PQueue[F, A]
+  val PQueue: ce.std.PQueue.type = ce.std.PQueue
+
+  type PQueueSink[F[_], A] = ce.std.PQueueSink[F, A]
+  val PQueueSink: ce.std.PQueueSink.type = ce.std.PQueueSink
+
+  type PQueueSource[F[_], A] = ce.std.PQueueSource[F, A]
+  val PQueueSource: ce.std.PQueueSource.type = ce.std.PQueueSource
+
+  type Supervisor[F[_]] = ce.std.Supervisor[F]
+  val Supervisor: ce.std.Supervisor.type = ce.std.Supervisor
+
+  type Dispatcher[F[_]] = ce.std.Dispatcher[F]
+  val Dispatcher: ce.std.Dispatcher.type = ce.std.Dispatcher
+
+  type CERandom[F[_]] = ce.std.Random[F]
+  val CERandom: ce.std.Random.type = ce.std.Random
+
+  type UUIDGen[F[_]] = ce.std.UUIDGen[F]
+  val UUIDGen: ce.std.UUIDGen.type = ce.std.UUIDGen
+
 }

@@ -5,16 +5,23 @@ See [changelog](./CHANGELOG.md).
 ## modules
 
 ### Scala versions
-Scala `2.13`, `3.0.0-RC1`, `3.0.0-RC2`, for JVM and JS.
+Scala `2.13`, `3.0.1`, for JVM and JS.
 
 The available modules are:
 
-- `"com.busymachines" %% "pureharm-effects-cats" % "0.4.0"`
-    - [cats](https://github.com/typelevel/cats/releases) `2.5.0`
-    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.4.1`
-    - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.4`
-    - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
-    - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.2.0`
+- `"com.busymachines" %% "pureharm-effects-cats" % "0.5.0"`
+    - in future versions this will be the only module. N.B. that this module is mutually exclusive with the one below, the latter existing for migration purposes towards cats-effect 3
+    - [cats](https://github.com/typelevel/cats/releases) `2.6.1`
+    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `3.2.0`
+    - [fs2-core](https://github.com/typelevel/fs2/releases) `3.0.6`
+    - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
+    - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
+- `"com.busymachines" %% "pureharm-effects-cats-2" % "0.5.0"` 
+    - [cats](https://github.com/typelevel/cats/releases) `2.6.1`
+    - [cats-effect](https://github.com/typelevel/cats-effect/releases) `2.5.2`
+    - [fs2-core](https://github.com/typelevel/fs2/releases) `2.5.9`
+    - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
+    - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
 
 ## usage
 

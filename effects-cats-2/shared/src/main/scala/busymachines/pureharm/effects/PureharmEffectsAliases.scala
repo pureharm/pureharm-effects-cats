@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package busymachines.pureharm.effects.aliases
+package busymachines.pureharm.effects
 
-import busymachines.pureharm.effects
+import busymachines.pureharm.effects.aliases
 
-/** @author
-  *   Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 13
-  *   Jun 2019
-  */
-trait PureharmEffectsTypeDefinitions {
-
-  //----------- handy custom types -----------
-  type Attempt[+R] = effects.Attempt[R]
-
-  type AttemptT[F[_], R] = effects.AttemptT[F, R]
-  val AttemptT: effects.AttemptT.type = effects.AttemptT
-
-  type Random[F[_]] = busymachines.pureharm.capabilities.Random[F]
-  val Random: busymachines.pureharm.capabilities.Random.type = busymachines.pureharm.capabilities.Random
-
-}
+// format: off
+trait PureharmEffectsAliases
+  extends aliases.PureharmEffectsTypeDefinitions
+  with aliases.CatsAliases
+  with aliases.ScalaStdAliases
+  with aliases.CatsEffectAliases
+  with aliases.Fs2Aliases
+// format: on

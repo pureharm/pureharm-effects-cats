@@ -16,22 +16,18 @@
 
 package busymachines.pureharm.effects.aliases
 
-import busymachines.pureharm.effects
+import cats.syntax
 
-/** @author
-  *   Lorand Szakacs, https://github.com/lorandszakacs
-  * @since 13
-  *   Jun 2019
-  */
-trait PureharmEffectsTypeDefinitions {
-
-  //----------- handy custom types -----------
-  type Attempt[+R] = effects.Attempt[R]
-
-  type AttemptT[F[_], R] = effects.AttemptT[F, R]
-  val AttemptT: effects.AttemptT.type = effects.AttemptT
-
-  type Random[F[_]] = busymachines.pureharm.capabilities.Random[F]
-  val Random: busymachines.pureharm.capabilities.Random.type = busymachines.pureharm.capabilities.Random
-
-}
+// format: off
+trait CatsSyntax
+  extends cats.effect.syntax.AllCatsEffectSyntax
+  with syntax.AllSyntax
+  with syntax.AllSyntaxBinCompat0
+  with syntax.AllSyntaxBinCompat1
+  with syntax.AllSyntaxBinCompat2
+  with syntax.AllSyntaxBinCompat3
+  with syntax.AllSyntaxBinCompat4
+  with syntax.AllSyntaxBinCompat5
+  with syntax.AllSyntaxBinCompat6
+  with syntax.AllSyntaxBinCompat7
+// format: on

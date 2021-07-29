@@ -20,14 +20,10 @@ trait Fs2Aliases {
   type Stream[+F[_], +O] = fs2.Stream[F, O]
   val Stream: fs2.Stream.type = fs2.Stream
 
-  type Pipe[F[_], -I, +O]       = fs2.Pipe[F, I, O]
-  type Pipe2[F[_], -I, -I2, +O] = (Stream[F, I], Stream[F, I2]) => Stream[F, O]
+  type Pipe[F[_], -I, +O] = fs2.Pipe[F, I, O]
 
   type Collector[-A] = fs2.Collector[A]
   val Collector: fs2.Collector.type = fs2.Collector
-
-  type Compiler[F[_], G[_]] = fs2.Compiler[F, G]
-  val Compiler: fs2.Compiler.type = fs2.Compiler
 
   type Pull[+F[_], +O, +R] = fs2.Pull[F, O, R]
   val Pull: fs2.Pull.type = fs2.Pull
@@ -35,15 +31,18 @@ trait Fs2Aliases {
   type Chunk[+O] = fs2.Chunk[O]
   val Chunk: fs2.Chunk.type = fs2.Chunk
 
-  type Channel[F[_], A] = fs2.concurrent.Channel[F, A]
-  val Channel: fs2.concurrent.Channel.type = fs2.concurrent.Channel
+  type Enqueue[F[_], A]             = fs2.concurrent.Enqueue[F, A]
+  type Dequeue[F[_], A]             = fs2.concurrent.Dequeue[F, A]
+  type Dequeue1[F[_], A]            = fs2.concurrent.Dequeue1[F, A]
+  type DequeueChunk1[F[_], G[_], A] = fs2.concurrent.DequeueChunk1[F, G, A]
 
-  type Signal[F[_], A] = fs2.concurrent.Signal[F, A]
-  val Signal: fs2.concurrent.Signal.type = fs2.concurrent.Signal
+  type Queue[F[_], A] = fs2.concurrent.Queue[F, A]
+  val Queue: fs2.concurrent.Queue.type = fs2.concurrent.Queue
 
-  type SignallingRef[F[_], A] = fs2.concurrent.SignallingRef[F, A]
-  val SignallingRef: fs2.concurrent.SignallingRef.type = fs2.concurrent.SignallingRef
+  type NoneTerminatedQueue[F[_], A] = fs2.concurrent.NoneTerminatedQueue[F, A]
 
-  type Topic[F[_], A] = fs2.concurrent.Topic[F, A]
-  val Topic: fs2.concurrent.Topic.type = fs2.concurrent.Topic
+  type InspectableQueue[F[_], A] = fs2.concurrent.InspectableQueue[F, A]
+  val InspectableQueue: fs2.concurrent.InspectableQueue.type = fs2.concurrent.InspectableQueue
+
+  val Balance: fs2.concurrent.Balance.type = fs2.concurrent.Balance
 }

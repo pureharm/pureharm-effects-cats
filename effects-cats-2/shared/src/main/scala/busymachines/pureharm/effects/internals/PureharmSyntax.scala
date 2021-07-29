@@ -21,8 +21,8 @@ import busymachines.pureharm.effects.Attempt
 
 import cats._
 import cats.implicits._
-import cats.effect._
-import scala.concurrent.duration.{Duration, FiniteDuration, TimeUnit, MILLISECONDS}
+import cats.effect.{MonadThrow => _, ApplicativeThrow => _, _}
+import scala.concurrent.duration._
 import scala.concurrent._
 import scala.util.control.NonFatal
 import scala.collection.BuildFrom
@@ -399,7 +399,7 @@ object PureharmSyntax {
       */
     def timedAttempt(
       unit:       TimeUnit = MILLISECONDS
-    )(implicit F: Temporal[F]): F[(FiniteDuration, Attempt[A])] =
+    )(implicit F: MonadThrow[F], timer: Timer[F]): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps.timedAttempt(unit)(fa)
 
     /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
@@ -423,7 +423,8 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Temporal[F]
+      F:              MonadThrow[F],
+      timer:          Timer[F],
     ): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps.timedReattempt(errorLog, timeUnit)(retries, betweenRetries)(fa)
 
@@ -435,7 +436,8 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Temporal[F]
+      F:              MonadThrow[F],
+      timer:          Timer[F],
     ): F[(FiniteDuration, Attempt[A])] =
       PureharmTimedAttemptReattemptSyntaxOps
         .timedReattempt(PureharmTimedAttemptReattemptSyntaxOps.noLog[F], timeUnit)(retries, betweenRetries)(fa)
@@ -457,7 +459,8 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Temporal[F]
+      F:              MonadThrow[F],
+      timer:          Timer[F],
     ): F[A] =
       PureharmTimedAttemptReattemptSyntaxOps.reattempt(errorLog)(retries, betweenRetries)(fa)
 
@@ -467,7 +470,8 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Temporal[F]
+      F:              MonadThrow[F],
+      timer:          Timer[F],
     ): F[A] =
       PureharmTimedAttemptReattemptSyntaxOps.reattempt(retries, betweenRetries)(fa)
   }
@@ -486,13 +490,12 @@ object PureharmSyntax {
       timeUnit:   TimeUnit
     )(
       fa:         F[A]
-    )(implicit F: Temporal[F]): F[(FiniteDuration, Attempt[A])] =
+    )(implicit F: MonadThrow[F], timer: Timer[F]): F[(FiniteDuration, Attempt[A])] =
       for {
-        start <- F.realTime
+        start <- realTime(timeUnit)(F, timer)
         att   <- fa.attempt
-        end   <- F.realTime
-        dur = end.minus(start)
-      } yield (FiniteDuration(timeUnit.convert(dur.length: Long, dur.unit), timeUnit), att)
+        end   <- realTime(timeUnit)(F, timer)
+      } yield (end.minus(start), att)
 
     /** Runs an effect ``F[A]`` a maximum of ``retries`` time, until it is not failed. Between each retry it waits
       * ``betweenRetries``. It also measures the time elapsed in total.
@@ -508,7 +511,7 @@ object PureharmSyntax {
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
       *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
-    def timedReattempt[F[_]: Temporal, A](
+    def timedReattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
     )(
@@ -530,7 +533,7 @@ object PureharmSyntax {
                     e,
                     s"effect failed: ${e.getMessage}. retries left=$rs, but first waiting: $betweenRetries",
                   )
-                  _     <- Temporal[F].sleep(betweenRetries)
+                  _     <- Timer[F].sleep(betweenRetries)
                   value <- recursiveRetry(fa)(rs - 1, newSoFar.plus(betweenRetries))
                 } yield value: (FiniteDuration, Attempt[A])
               }
@@ -555,7 +558,7 @@ object PureharmSyntax {
       * @return
       *   N.B. It only captures the latest failure, if it encounters one.
       */
-    def reattempt[F[_]: Temporal, A](
+    def reattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit]
     )(
       retries:        Int,
@@ -567,7 +570,7 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
-    def reattempt[F[_]: Temporal, A](
+    def reattempt[F[_]: MonadThrow: Timer, A](
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(
@@ -578,6 +581,10 @@ object PureharmSyntax {
     private def noLog[F[_]: Applicative]: (Throwable, String) => F[Unit] =
       (_, _) => Applicative[F].unit
 
+    //find appropriate util package for this... looks useful...
+    private def realTime[F[_]: Applicative: Timer](unit: TimeUnit): F[FiniteDuration] =
+      Timer[F].clock.realTime(unit).map(tl => FiniteDuration(tl, unit))
+
   }
 
   final class PureharmStreamOps[F[_], A](val stream: Stream[F, A]) {
@@ -585,7 +592,7 @@ object PureharmSyntax {
     def reattempt(
       retries:        Int,
       betweenRetries: FiniteDuration,
-    )(implicit F:     Temporal[F]): Stream[F, A] =
+    )(implicit F:     MonadThrow[F], timer: Timer[F]): Stream[F, A] =
       this.reattempt(noLog[F])(retries, betweenRetries)
 
     def reattempt(
@@ -594,7 +601,8 @@ object PureharmSyntax {
       retries:        Int,
       betweenRetries: FiniteDuration,
     )(implicit
-      F:              Temporal[F]
+      F:              MonadThrow[F],
+      timer:          Timer[F],
     ): Stream[F, A] =
       stream.recoverWith { case e: Throwable =>
         if (retries > 0) {
@@ -603,7 +611,7 @@ object PureharmSyntax {
               errorLog(
                 e,
                 s"Stream failed w/: ${e.getMessage}. retries left=$retries, but first waiting: $betweenRetries",
-              ) *> F.sleep(betweenRetries)
+              ) *> timer.sleep(betweenRetries)
             )
             .flatMap(_ => reattempt(errorLog)(retries - 1, betweenRetries))
         }
@@ -613,7 +621,7 @@ object PureharmSyntax {
               errorLog(
                 e,
                 s"Stream failed even after exhausting all retries w/: ${e.getMessage}.",
-              ) *> F.sleep(betweenRetries)
+              ) *> timer.sleep(betweenRetries)
             )
             .flatMap(_ => e.raiseError[Stream[F, *], A])
 
