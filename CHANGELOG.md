@@ -24,6 +24,8 @@ This is the first release for a stable Scala 3 version!
 ### pureharm-effects-cats
 - first compatible module w/ cats-effect 3!
 - removed PureharmIOApp, you can safely use IOApp, ResourceApp, and kin from cats-effect.
+- removed `BlockingShifter`, sinice ContextShift, and Blocker are both gone from cats-effect
+- removed `ExecutionContextMT`, since it existed solely for the purpose of instantiating a good pool from main. With cats-effect 3 it's almost impossible to give a good replacement, so just rely on the default compute pool of cats-effect 3, it's really good!
 
 
 ### new Scala versions:
