@@ -17,55 +17,60 @@
 package busymachines.pureharm.capabilities
 
 import java.util.UUID
-import scala.util.{Random => ScalaRandom}
 
 import busymachines.pureharm.effects._
-import cats.syntax.all._
 
-trait Random[F[_]] {
-  def boolean: F[Boolean]
+trait Random[F[_]] extends CERandom[F] { self =>
 
-  def int: F[Int]
-  def int(l: Int): F[Int]
-  def int(l: Int, h: Int): F[Int]
+  /** @param length
+    *   will default to 1 if parameter is (length <= 0)
+    * @return
+    *   a string of specified length, where every character is consistent with [[nextPrintableChar]]
+    */
+  def printableString(length: Int): F[String]
 
-  def long: F[Long]
-  def long(l: Long): F[Long]
-  def long(l: Long, h: Long): F[Long]
-
-  def double(l: Double): F[Double]
-
-  def double(l: Double, h: Double): F[Double]
-
-  def string(maxSize: Int): F[String]
-
+  /** Generates a Version 4 java.util.UUID
+    */
   def uuid: F[UUID]
 
-  final def mapK[G[_]](fk: F ~> G): Random[G] = new Random[G] {
-    override def boolean: G[Boolean] = fk(Random.this.boolean)
+  /** Modifies the context in which this [[Random]] operates using the natural transformation `f`.
+    *
+    * @return
+    *   a [[Random]] in the new context obtained by mapping the current one using `f`
+    */
+  override def mapK[G[_]](f: F ~> G): Random[G] =
+    new Random[G] {
 
-    override def int: G[Int] = fk(Random.this.int)
+      override def betweenDouble(minInclusive: Double, maxExclusive: Double): G[Double] =
+        f(self.betweenDouble(minInclusive, maxExclusive))
 
-    override def int(l: Int): G[Int] = fk(Random.this.int(l))
+      override def betweenFloat(minInclusive: Float, maxExclusive: Float): G[Float] =
+        f(self.betweenFloat(minInclusive, maxExclusive))
 
-    override def int(l: Int, h: Int): G[Int] = fk(Random.this.int(l, h))
+      override def betweenInt(minInclusive: Int, maxExclusive: Int): G[Int] =
+        f(self.betweenInt(minInclusive, maxExclusive))
 
-    override def long: G[Long] = fk(Random.this.long)
+      override def betweenLong(minInclusive: Long, maxExclusive: Long): G[Long] =
+        f(self.betweenLong(minInclusive, maxExclusive))
+      override def nextAlphaNumeric: G[Char]    = f(self.nextAlphaNumeric)
+      override def nextBoolean:      G[Boolean] = f(self.nextBoolean)
+      override def nextBytes(n: Int): G[Array[Byte]] = f(self.nextBytes(n))
+      override def nextDouble:   G[Double] = f(self.nextDouble)
+      override def nextFloat:    G[Float]  = f(self.nextFloat)
+      override def nextGaussian: G[Double] = f(self.nextGaussian)
+      override def nextInt:      G[Int]    = f(self.nextInt)
+      override def nextIntBounded(n: Int): G[Int] = f(self.nextIntBounded(n))
+      override def nextLong: G[Long] = f(self.nextLong)
+      override def nextLongBounded(n: Long): G[Long] = f(self.nextLongBounded(n))
+      override def nextPrintableChar: G[Char] = f(self.nextPrintableChar)
+      override def nextString(length:       Int):       G[String]    = f(self.nextString(length))
+      override def shuffleList[A](l:        List[A]):   G[List[A]]   = f(self.shuffleList(l))
+      override def shuffleVector[A](v:      Vector[A]): G[Vector[A]] = f(self.shuffleVector(v))
+      override def printableString(maxSize: Int):       G[String]    = f(self.printableString(maxSize))
+      override def uuid: G[UUID] = f(self.uuid)
 
-    override def long(l: Long): G[Long] = fk(Random.this.long(l))
+    }
 
-    override def long(l: Long, h: Long): G[Long] = fk(Random.this.long(l, h))
-
-    override def double(l: Double): G[Double] = fk(Random.this.double(l))
-
-    override def double(l: Double, h: Double): G[Double] = fk(Random.this.double(l, h))
-
-    override def string(maxSize: Int): G[String] = fk(Random.this.string(maxSize))
-
-    /** Generates a Version 4 UUID
-      */
-    override def uuid: G[UUID] = fk(Random.this.uuid)
-  }
 }
 
 object Random extends PlatformSpecificRandom {
@@ -78,13 +83,9 @@ object Random extends PlatformSpecificRandom {
     *
     * This reduces contention on the same random instance in a concurrent setting.
     */
-  def threadLocalRandom[F[_]](implicit F: Sync[F]): Random[F] = new RandomImpl[F] {
-
-    override protected val randomF: F[ScalaRandom] = {
-      for {
-        javaTLR <- F.delay(java.util.concurrent.ThreadLocalRandom.current())
-      } yield new ScalaRandom(javaTLR)
-    }
+  def threadLocalRandom[F[_]](implicit F: Sync[F]): Random[F] = {
+    implicit val ce3Random: CERandom[F] = CERandom.javaUtilConcurrentThreadLocalRandom[F]
+    new RandomImpl[F] {}
   }
 
   implicit def randomForResource[F[_]](implicit random: Random[F]): Random[Resource[F, *]] =

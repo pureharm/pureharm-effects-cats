@@ -397,6 +397,7 @@ object PureharmSyntax {
       * @return
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
+    @scala.deprecated("Use a combination of attempt + .timed", "0.5.0")
     def timedAttempt(
       unit:       TimeUnit = MILLISECONDS
     )(implicit F: MonadThrow[F], timer: Timer[F]): F[(FiniteDuration, Attempt[A])] =
@@ -416,6 +417,7 @@ object PureharmSyntax {
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
       *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
+    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
     def timedReattempt(
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
@@ -430,6 +432,7 @@ object PureharmSyntax {
 
     /** Same as overload timedReattempt, but does not report any failures.
       */
+    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
     def timedReattempt(
       timeUnit:       TimeUnit
     )(
@@ -453,6 +456,7 @@ object PureharmSyntax {
       * @return
       *   N.B. It only captures the latest failure, if it encounters one.
       */
+    @scala.deprecated("Use retry from cats-retry", "0.5.0")
     def reattempt(
       errorLog:       (Throwable, String) => F[Unit]
     )(
@@ -466,6 +470,7 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
+    @scala.deprecated("Use a combination of attempt + .timed from cats-effect", "0.5.0")
     def reattempt(
       retries:        Int,
       betweenRetries: FiniteDuration,
@@ -486,6 +491,7 @@ object PureharmSyntax {
       * @return
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
+    @scala.deprecated("Use a combination of attempt + .timed from cats-effect", "0.5.0")
     def timedAttempt[F[_], A](
       timeUnit:   TimeUnit
     )(
@@ -511,6 +517,7 @@ object PureharmSyntax {
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
       *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
+    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
     def timedReattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
@@ -558,6 +565,7 @@ object PureharmSyntax {
       * @return
       *   N.B. It only captures the latest failure, if it encounters one.
       */
+    @scala.deprecated("Use a cats-retry", "0.5.0")
     def reattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit]
     )(
@@ -570,6 +578,7 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
+    @scala.deprecated("Use a cats-retry", "0.5.0")
     def reattempt[F[_]: MonadThrow: Timer, A](
       retries:        Int,
       betweenRetries: FiniteDuration,

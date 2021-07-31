@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 BusyMachines
+ * Copyright 2020-2021 Typelevel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,49 +22,75 @@ import scala.util.{Random => ScalaRandom}
 import busymachines.pureharm.effects._
 import cats.syntax.all._
 
-trait Random[F[_]] {
-  def boolean: F[Boolean]
+/** Backport of cats-effect 3's Random[F] capability trait. with two extra methods [[printableString]], and [[uuid]]
+  * Used to help ease migration.
+  * @see
+  *   https://github.com/typelevel/cats-effect/blob/series/3.x/std/shared/src/main/scala/cats/effect/std/Random.scala
+  */
+trait Random[F[_]] { self =>
+  def betweenDouble(minInclusive: Double, maxExclusive: Double): F[Double]
+  def betweenFloat(minInclusive:  Float, maxExclusive:  Float):  F[Float]
+  def betweenInt(minInclusive:    Int, maxExclusive:    Int):    F[Int]
+  def betweenLong(minInclusive:   Long, maxExclusive:   Long):   F[Long]
+  def nextAlphaNumeric: F[Char]
+  def nextBoolean:      F[Boolean]
+  def nextBytes(n: Int): F[Array[Byte]]
+  def nextDouble:   F[Double]
+  def nextFloat:    F[Float]
+  def nextGaussian: F[Double]
+  def nextInt:      F[Int]
+  def nextIntBounded(n: Int): F[Int]
+  def nextLong: F[Long]
+  def nextLongBounded(n: Long): F[Long]
+  def nextPrintableChar: F[Char]
+  def nextString(length:  Int):       F[String]
+  def shuffleList[A](l:   List[A]):   F[List[A]]
+  def shuffleVector[A](v: Vector[A]): F[Vector[A]]
 
-  def int: F[Int]
-  def int(l: Int): F[Int]
-  def int(l: Int, h: Int): F[Int]
+  /** @param length
+    *   will default to 1 if parameter is (length <= 0)
+    * @return
+    *   a string of specified length, where every character is consistent with [[nextPrintableChar]]
+    */
+  def printableString(length: Int): F[String]
 
-  def long: F[Long]
-  def long(l: Long): F[Long]
-  def long(l: Long, h: Long): F[Long]
-
-  def double(l: Double): F[Double]
-
-  def double(l: Double, h: Double): F[Double]
-
-  def string(maxSize: Int): F[String]
-
+  /** Generates a Version 4 java.util.UUID
+    */
   def uuid: F[UUID]
 
-  final def mapK[G[_]](fk: F ~> G): Random[G] = new Random[G] {
-    override def boolean: G[Boolean] = fk(Random.this.boolean)
+  final def mapK[G[_]](f: F ~> G): Random[G] = new Random[G] {
 
-    override def int: G[Int] = fk(Random.this.int)
+    override def betweenDouble(minInclusive: Double, maxExclusive: Double): G[Double] =
+      f(self.betweenDouble(minInclusive, maxExclusive))
 
-    override def int(l: Int): G[Int] = fk(Random.this.int(l))
+    override def betweenFloat(minInclusive: Float, maxExclusive: Float): G[Float] =
+      f(self.betweenFloat(minInclusive, maxExclusive))
 
-    override def int(l: Int, h: Int): G[Int] = fk(Random.this.int(l, h))
+    override def betweenInt(minInclusive: Int, maxExclusive: Int): G[Int] =
+      f(self.betweenInt(minInclusive, maxExclusive))
 
-    override def long: G[Long] = fk(Random.this.long)
+    override def betweenLong(minInclusive: Long, maxExclusive: Long): G[Long] =
+      f(self.betweenLong(minInclusive, maxExclusive))
+    override def nextAlphaNumeric: G[Char]    = f(self.nextAlphaNumeric)
+    override def nextBoolean:      G[Boolean] = f(self.nextBoolean)
+    override def nextBytes(n: Int): G[Array[Byte]] = f(self.nextBytes(n))
+    override def nextDouble:   G[Double] = f(self.nextDouble)
+    override def nextFloat:    G[Float]  = f(self.nextFloat)
+    override def nextGaussian: G[Double] = f(self.nextGaussian)
+    override def nextInt:      G[Int]    = f(self.nextInt)
+    override def nextIntBounded(n: Int): G[Int] = f(self.nextIntBounded(n))
+    override def nextLong: G[Long] = f(self.nextLong)
+    override def nextLongBounded(n: Long): G[Long] = f(self.nextLongBounded(n))
+    override def nextPrintableChar: G[Char] = f(self.nextPrintableChar)
+    override def nextString(length:  Int):       G[String]    = f(self.nextString(length))
+    override def shuffleList[A](l:   List[A]):   G[List[A]]   = f(self.shuffleList(l))
+    override def shuffleVector[A](v: Vector[A]): G[Vector[A]] = f(self.shuffleVector(v))
 
-    override def long(l: Long): G[Long] = fk(Random.this.long(l))
-
-    override def long(l: Long, h: Long): G[Long] = fk(Random.this.long(l, h))
-
-    override def double(l: Double): G[Double] = fk(Random.this.double(l))
-
-    override def double(l: Double, h: Double): G[Double] = fk(Random.this.double(l, h))
-
-    override def string(maxSize: Int): G[String] = fk(Random.this.string(maxSize))
+    override def printableString(length: Int): G[String] = f(self.printableString(length))
 
     /** Generates a Version 4 UUID
       */
-    override def uuid: G[UUID] = fk(Random.this.uuid)
+    override def uuid: G[UUID] = f(Random.this.uuid)
   }
 }
 

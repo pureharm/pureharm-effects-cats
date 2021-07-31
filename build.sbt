@@ -70,7 +70,7 @@ ThisBuild / spiewakMainBranches       := List("main")
 ThisBuild / Test / publishArtifact    := false
 
 ThisBuild / scalaVersion       := Scala213
-ThisBuild / crossScalaVersions := List(Scala213) //List(Scala213, Scala3)
+ThisBuild / crossScalaVersions := List(Scala213, Scala3)
 
 //required for binary compat checks
 ThisBuild / versionIntroduced := Map(
@@ -141,7 +141,8 @@ lazy val `effects-catsJS` = `effects-cats`.js
 
 lazy val `effects-cats-2` = crossProject(JVMPlatform, JSPlatform)
   .settings(
-    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
+    headerSources / excludeFilter := HiddenFileFilter || "*RandomImpl.scala" || "*Random.scala",
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
