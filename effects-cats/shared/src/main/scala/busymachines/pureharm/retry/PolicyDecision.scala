@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 BusyMachines
+ * Copyright 2021 Chris Birchall et. co, contributors of cats-retry
+ * https://github.com/cb372/cats-retry
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package busymachines.pureharm.retry
 
-package busymachines.pureharm.effects
+import scala.concurrent.duration.FiniteDuration
 
-import busymachines.pureharm.effects.aliases
+sealed trait PolicyDecision
 
-// format: off
-trait PureharmEffectsAliases
-  extends aliases.PureharmEffectsTypeDefinitions
-  with aliases.CatsAliases
-  with aliases.ScalaStdAliases
-  with aliases.CatsEffectAliases
-  with aliases.Fs2Aliases
-  with aliases.RetryAliases
-// format: on
+object PolicyDecision {
+  case object GiveUp extends PolicyDecision
+
+  final case class DelayAndRetry(
+    delay: FiniteDuration
+  ) extends PolicyDecision
+}

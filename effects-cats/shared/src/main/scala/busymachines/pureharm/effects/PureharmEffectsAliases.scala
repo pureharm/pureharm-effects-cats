@@ -25,4 +25,5 @@ trait PureharmEffectsAliases
   with aliases.ScalaStdAliases
   with aliases.CatsEffectAliases
   with aliases.Fs2Aliases
+  with aliases.RetryAliases
 // format: on

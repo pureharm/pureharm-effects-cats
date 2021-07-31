@@ -114,7 +114,8 @@ lazy val root = project
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
   .settings(
-    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
+    headerSources / excludeFilter := HiddenFileFilter || inlinedCatsRetryFiles,
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -142,7 +143,7 @@ lazy val `effects-catsJS` = `effects-cats`.js
 lazy val `effects-cats-2` = crossProject(JVMPlatform, JSPlatform)
   .settings(
     scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
-    headerSources / excludeFilter := HiddenFileFilter || "*RandomImpl.scala" || "*Random.scala",
+    headerSources / excludeFilter := HiddenFileFilter || inlinedCatsRetryFiles || "*RandomImpl.scala" || "*Random.scala",
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -170,6 +171,16 @@ lazy val `effects-cats-2JS` = `effects-cats-2`.js
 //=============================================================================
 //================================= Settings ==================================
 //=============================================================================
+
+def inlinedCatsRetryFiles: FileFilter =
+  "*package.scala" ||
+    "*Fibonacci.scala" ||
+    "*PolicyDecision.scala" ||
+    "*RetryDetails.scala" ||
+    "*RetryPolicies.scala" ||
+    "*RetryPolicy.scala" ||
+    "*RetryStatus.scala" ||
+    "*Sleep.scala"
 
 def scalaCompilerOptions(scalaVersion: String): Seq[String] =
   CrossVersion.partialVersion(scalaVersion) match {

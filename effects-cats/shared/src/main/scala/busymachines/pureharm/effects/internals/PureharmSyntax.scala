@@ -18,6 +18,7 @@ package busymachines.pureharm.effects.internals
 
 import busymachines.pureharm.anomaly._
 import busymachines.pureharm.effects.Attempt
+import busymachines.pureharm.retry._
 
 import cats._
 import cats.implicits._
@@ -36,6 +37,9 @@ import fs2._
 object PureharmSyntax {
 
   trait Implicits {
+
+    implicit final def pureharmRetryOps[F[_], A, E](fa: F[A])(implicit F: MonadError[F, E]): RetryOps[F, A, E] =
+      new RetryOps[F, A, E](fa)
 
     implicit final def pureharmFOps[F[_], A](fa: F[A]): FOps[F, A] = new FOps[F, A](fa)
 
@@ -62,6 +66,72 @@ object PureharmSyntax {
 
     implicit final def pureharmStreamOps[F[_], A](stream: Stream[F, A]): PureharmStreamOps[F, A] =
       new PureharmStreamOps(stream)
+  }
+
+  //--------------------------- retry ----------------------------
+
+  final class RetryOps[M[_], A, E](action: => M[A])(implicit M: MonadError[M, E]) {
+
+    def retryingOnFailures[E](
+      wasSuccessful: A => M[Boolean],
+      policy:        RetryPolicy[M],
+      onFailure:     (A, RetryDetails) => M[Unit],
+    )(implicit
+      S:             Sleep[M]
+    ): M[A] =
+      retryOps.retryingOnFailures(
+        policy        = policy,
+        wasSuccessful = wasSuccessful,
+        onFailure     = onFailure,
+      )(action)
+
+    def retryingOnAllErrors(
+      policy:     RetryPolicy[M],
+      onError:    (E, RetryDetails) => M[Unit],
+    )(implicit S: Sleep[M]): M[A] =
+      retryOps.retryingOnAllErrors(
+        policy  = policy,
+        onError = onError,
+      )(action)
+
+    def retryingOnSomeErrors(
+      isWorthRetrying: E => M[Boolean],
+      policy:          RetryPolicy[M],
+      onError:         (E, RetryDetails) => M[Unit],
+    )(implicit S:      Sleep[M]): M[A] =
+      retryOps.retryingOnSomeErrors(
+        policy          = policy,
+        isWorthRetrying = isWorthRetrying,
+        onError         = onError,
+      )(action)
+
+    def retryingOnFailuresAndAllErrors(
+      wasSuccessful: A => M[Boolean],
+      policy:        RetryPolicy[M],
+      onFailure:     (A, RetryDetails) => M[Unit],
+      onError:       (E, RetryDetails) => M[Unit],
+    )(implicit S:    Sleep[M]): M[A] =
+      retryOps.retryingOnFailuresAndAllErrors(
+        policy        = policy,
+        wasSuccessful = wasSuccessful,
+        onFailure     = onFailure,
+        onError       = onError,
+      )(action)
+
+    def retryingOnFailuresAndSomeErrors(
+      wasSuccessful:   A => M[Boolean],
+      isWorthRetrying: E => M[Boolean],
+      policy:          RetryPolicy[M],
+      onFailure:       (A, RetryDetails) => M[Unit],
+      onError:         (E, RetryDetails) => M[Unit],
+    )(implicit S:      Sleep[M]): M[A] =
+      retryOps.retryingOnFailuresAndSomeErrors(
+        policy          = policy,
+        wasSuccessful   = wasSuccessful,
+        isWorthRetrying = isWorthRetrying,
+        onFailure       = onFailure,
+        onError         = onError,
+      )(action)
   }
 
   //---------------------------- FOps ----------------------------

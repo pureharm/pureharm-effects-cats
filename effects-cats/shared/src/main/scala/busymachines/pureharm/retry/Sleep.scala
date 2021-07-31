@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 BusyMachines
+ * Copyright 2021 Chris Birchall et. co, contributors of cats-retry
+ * https://github.com/cb372/cats-retry
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +15,19 @@
  * limitations under the License.
  */
 
-package busymachines.pureharm.effects
+package busymachines.pureharm.retry
 
-import busymachines.pureharm.effects.aliases
+import cats.effect.Temporal
 
-// format: off
-trait PureharmEffectsAliases
-  extends aliases.PureharmEffectsTypeDefinitions
-  with aliases.CatsAliases
-  with aliases.ScalaStdAliases
-  with aliases.CatsEffectAliases
-  with aliases.Fs2Aliases
-  with aliases.RetryAliases
-// format: on
+import scala.concurrent.duration.FiniteDuration
+
+trait Sleep[M[_]] {
+  def sleep(delay: FiniteDuration): M[Unit]
+}
+
+object Sleep {
+  def apply[M[_]](implicit sleep: Sleep[M]): Sleep[M] = sleep
+
+  implicit def sleepUsingTemporal[F[_]](implicit t: Temporal[F]): Sleep[F] =
+    (delay: FiniteDuration) => t.sleep(delay)
+}
