@@ -141,7 +141,8 @@ lazy val `effects-catsJS` = `effects-cats`.js
 
 lazy val `effects-cats-2` = crossProject(JVMPlatform, JSPlatform)
   .settings(
-    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
+    headerSources / excludeFilter := HiddenFileFilter || "*RandomImpl.scala" || "*Random.scala",
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))

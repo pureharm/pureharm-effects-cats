@@ -17,48 +17,40 @@
 package busymachines.pureharm.capabilities
 
 import java.util.UUID
-import scala.util.{Random => ScalaRandom}
 
-import busymachines.pureharm.anomaly._
 import busymachines.pureharm.effects._
 import cats.syntax.all._
 
-abstract class RandomImpl[F[_]](implicit F: Sync[F]) extends Random[F] {
+abstract class RandomImpl[F[_]](implicit F: Monad[F], r: CERandom[F]) extends Random[F] {
 
-  protected def randomF: F[ScalaRandom]
+  override def betweenDouble(minInclusive: Double, maxExclusive: Double): F[Double] =
+    r.betweenDouble(minInclusive, maxExclusive)
 
-  protected def delay[A](f: ScalaRandom => A): F[A] = randomF.flatMap(sr => F.delay(f(sr)))
+  override def betweenFloat(minInclusive: Float, maxExclusive: Float): F[Float] =
+    r.betweenFloat(minInclusive, maxExclusive)
 
-  override def boolean: F[Boolean] = delay(_.nextBoolean())
+  override def betweenInt(minInclusive: Int, maxExclusive: Int): F[Int] =
+    r.betweenInt(minInclusive, maxExclusive)
 
-  override def int: F[Int] = delay(_.nextInt())
-  override def int(i: Int): F[Int] = delay(_.nextInt(i.max(1)))
+  override def betweenLong(minInclusive: Long, maxExclusive: Long): F[Long] =
+    r.betweenLong(minInclusive, maxExclusive)
+  override def nextAlphaNumeric: F[Char]    = r.nextAlphaNumeric
+  override def nextBoolean:      F[Boolean] = r.nextBoolean
+  override def nextBytes(n: Int): F[Array[Byte]] = r.nextBytes(n)
+  override def nextDouble:   F[Double] = r.nextDouble
+  override def nextFloat:    F[Float]  = r.nextFloat
+  override def nextGaussian: F[Double] = r.nextGaussian
+  override def nextInt:      F[Int]    = r.nextInt
+  override def nextIntBounded(n: Int): F[Int] = r.nextIntBounded(n)
+  override def nextLong: F[Long] = r.nextLong
+  override def nextLongBounded(n: Long): F[Long] = r.nextLongBounded(n)
+  override def nextPrintableChar: F[Char] = r.nextPrintableChar
+  override def nextString(length:  Int):       F[String]    = r.nextString(length)
+  override def shuffleList[A](l:   List[A]):   F[List[A]]   = r.shuffleList(l)
+  override def shuffleVector[A](v: Vector[A]): F[Vector[A]] = r.shuffleVector(v)
 
-  override def int(l: Int, h: Int): F[Int] = for {
-    _ <-
-      if (l > h) InvalidInputAnomaly(s"Random.int(l: Int, h: Int) - l < h, but l=$l, h=$h").raiseError[F, Unit]
-      else F.unit
-    diff = h - l
-    lower <- int(diff)
-  } yield lower + diff
-
-  override def long: F[Long] = delay(_.nextLong())
-
-  override def long(l: Long): F[Long] = delay(_.nextLong(l.max(1L)))
-
-  override def long(l: Long, h: Long): F[Long] = for {
-    _ <-
-      if (l > h) InvalidInputAnomaly(s"Random.long(l: Int, h: Int) - l < h, but l=$l, h=$h").raiseError[F, Unit]
-      else F.unit
-    diff = h - l
-    lower <- long(diff)
-  } yield lower + diff
-
-  override def double(h: Double): F[Double] = this.double(0.0d, h)
-  override def double(l: Double, h: Double): F[Double] = delay(_.between(l, h))
-
-  override def string(length: Int): F[String] =
-    delay(sr => List.range(0, length).map(_ => sr.nextPrintableChar()).mkString)
+  override def printableString(length: Int): F[String] =
+    List.range(0, length.max(1)).traverse(_ => r.nextPrintableChar).map(_.mkString)
 
   // see point 2 of the procedure:
   //  https://www.cryptosys.net/pki/uuid-rfc4122.html#note1
@@ -74,10 +66,12 @@ abstract class RandomImpl[F[_]](implicit F: Sync[F]) extends Random[F] {
   private[this] val clearBits79_80: Long = ~((1L << 15L) | (1L << 16L))
   private[this] val setBits79_80:   Long = 1L << 15L
 
-  override def uuid: F[UUID] = delay { sr =>
-    new java.util.UUID(
-      (sr.nextLong() & clearBits79_80) ^ setBits79_80, //most significant bits
-      (sr.nextLong() & clearBits49_52) ^ setBits49_52, //least significant bits
+  override def uuid: F[UUID] =
+    for {
+      msb <- r.nextLong
+      lsb <- r.nextLong
+    } yield new java.util.UUID(
+      (msb & clearBits79_80) ^ setBits79_80, //most significant bits
+      (lsb & clearBits49_52) ^ setBits49_52, //least significant bits
     )
-  }
 }

@@ -16,8 +16,6 @@
 
 package busymachines.pureharm.capabilities
 
-import scala.util.{Random => ScalaRandom}
-
 import busymachines.pureharm.effects._
 import cats.syntax.all._
 
@@ -27,12 +25,6 @@ trait PlatformSpecificRandom {
     *
     * Available only on JVM, JS does not have secure random.
     */
-  def secureRandom[F[_]](implicit F: Sync[F]): Random[F] = new RandomImpl[F] {
-
-    override protected val randomF: F[ScalaRandom] = {
-      for {
-        javaTLR <- F.delay(new java.security.SecureRandom)
-      } yield new ScalaRandom(javaTLR)
-    }
-  }
+  def secureRandom[F[_]](implicit F: Sync[F]): F[Random[F]] =
+    CERandom.javaSecuritySecureRandom[F].map { implicit ceRandom: CERandom[F] => new RandomImpl[F] {} }
 }

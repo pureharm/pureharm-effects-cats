@@ -19,7 +19,7 @@ This is the first release for a stable Scala 3 version!
 ### new features
 
 #### pureharm-effects-cats-2
-- add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation
+- add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation. It is source compatible w/ the version provided in the `pureharm-effects-cats`, and the cats-effect 3 version.
 
 ### pureharm-effects-cats
 - first compatible module w/ cats-effect 3!
