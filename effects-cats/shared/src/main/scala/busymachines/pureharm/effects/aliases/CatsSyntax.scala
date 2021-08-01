@@ -21,6 +21,7 @@ import cats.syntax
 // format: off
 trait CatsSyntax
   extends cats.effect.syntax.AllSyntax
+  with cats.effect.std.syntax.AllSyntax
   with syntax.AllSyntax
   with syntax.AllSyntaxBinCompat0
   with syntax.AllSyntaxBinCompat1
