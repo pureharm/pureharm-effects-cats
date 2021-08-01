@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
-This is the first release for a stable Scala 3 version!
+
+This is the first release for a stable Scala 3 version, and the first release compatible with [cats-effect 3](https://github.com/typelevel/cats-effect/releases/tag/v3.2.1)
 
 ### :warning: breaking changes :warning
 - the module from version 0.4.0 is now named `pureharm-effects-cats-2`, so if you did not yet upgrade your entire stack to cats-effect 3 then use this module. `pureharm-effects-cats` now refers to the module version based on cats-effect 3.
@@ -41,8 +42,8 @@ This is the first release for a stable Scala 3 version!
 
 ### Version upgrades:
 - [cats](https://github.com/typelevel/cats) `2.6.1`
-- [cats-effect](https://github.com/typelevel/cats-effect) `2.5.2`
-- [fs2-core](https://github.com/typelevel/fs2) `2.5.9`
+- [cats-effect](https://github.com/typelevel/cats-effect) `2.5.2`, `3.2.1`
+- [fs2-core](https://github.com/typelevel/fs2) `2.5.9`, `3.0.6`
 - [pureharm-core-anomaly](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
 - [pureharm-core-sprout](https://github.com/busymachines/pureharm-core/releases) `0.3.0`
 
