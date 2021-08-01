@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # unreleased
 
+### 0.5.0
 
 This is the first release for a stable Scala 3 version, and the first release compatible with [cats-effect 3](https://github.com/typelevel/cats-effect/releases/tag/v3.2.1)
 
