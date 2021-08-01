@@ -149,6 +149,32 @@ object PureharmSyntax {
         case NonFatal(e) => UnhandledCatastrophe(e): AnomalyLike
       })
 
+    /** back-port of CE-3s .timed syntax
+      *
+      * @return
+      *   duration it took for the (successful) evaluation of F[A], in nanoseconds. Use [[timedIn]] if you want a method
+      *   that returns the time in the given unit.
+      */
+    def timed(implicit F: Monad[F], timer: Timer[F]): F[(FiniteDuration, A)] =
+      for {
+        start <- timer.clock.monotonic(NANOSECONDS): F[Long]
+        r     <- fa
+        end   <- timer.clock.monotonic(NANOSECONDS): F[Long]
+        dur = end - start
+      } yield (FiniteDuration(dur, NANOSECONDS), r)
+
+    /** .timedIn(scala.concurent.duration.NANOSECONDS) is equivalent to .timed
+      *
+      * @param timeUnit
+      *   default value is MILLISECONDS
+      */
+    def timedIn(timeUnit: TimeUnit = MILLISECONDS)(implicit F: Monad[F], timer: Timer[F]): F[(FiniteDuration, A)] =
+      for {
+        start <- timer.clock.monotonic(timeUnit): F[Long]
+        r     <- fa
+        end   <- timer.clock.monotonic(timeUnit): F[Long]
+        dur = end - start
+      } yield (FiniteDuration(dur.max(0L), timeUnit), r)
   }
 
   //--------------------------- OPTION ---------------------------

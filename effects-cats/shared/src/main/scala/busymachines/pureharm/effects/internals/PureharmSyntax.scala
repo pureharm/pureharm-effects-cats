@@ -149,6 +149,19 @@ object PureharmSyntax {
         case NonFatal(e) => UnhandledCatastrophe(e): AnomalyLike
       })
 
+    /** .timedIn(scala.concurent.duration.NANOSECONDS) is equivalent to .timed (from cats-effect 3 syntax)
+      *
+      * @param timeUnit
+      *   default value is MILLISECONDS
+      */
+    def timedIn(timeUnit: TimeUnit = MILLISECONDS)(implicit F: Monad[F], clock: Clock[F]): F[(FiniteDuration, A)] =
+      for {
+        start <- clock.monotonic
+        r     <- fa
+        end   <- clock.monotonic
+        dur = end - start
+      } yield (FiniteDuration(dur.toUnit(timeUnit).round, timeUnit), r)
+
   }
 
   //--------------------------- OPTION ---------------------------
