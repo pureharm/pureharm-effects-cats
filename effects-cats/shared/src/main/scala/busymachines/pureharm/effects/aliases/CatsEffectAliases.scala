@@ -130,6 +130,9 @@ trait CatsEffectAliases {
   type Console[F[_]] = ce.std.Console[F]
   val Console: ce.std.Console.type = ce.std.Console
 
+  type Backpressure[F[_]] = ce.std.Backpressure[F]
+  val Backpressure: ce.std.Backpressure.type = ce.std.Backpressure
+
   type Semaphore[F[_]] = ce.std.Semaphore[F]
   val Semaphore: ce.std.Semaphore.type = ce.std.Semaphore
 

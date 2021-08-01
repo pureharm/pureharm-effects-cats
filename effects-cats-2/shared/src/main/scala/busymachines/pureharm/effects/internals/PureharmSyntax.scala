@@ -18,6 +18,7 @@ package busymachines.pureharm.effects.internals
 
 import busymachines.pureharm.anomaly._
 import busymachines.pureharm.effects.Attempt
+import busymachines.pureharm.retry._
 
 import cats._
 import cats.implicits._
@@ -36,6 +37,9 @@ import fs2._
 object PureharmSyntax {
 
   trait Implicits {
+
+    implicit final def pureharmRetryOps[F[_], A, E](fa: F[A])(implicit F: MonadError[F, E]): RetryOps[F, A, E] =
+      new RetryOps[F, A, E](fa)
 
     implicit final def pureharmFOps[F[_], A](fa: F[A]): FOps[F, A] = new FOps[F, A](fa)
 
@@ -64,6 +68,72 @@ object PureharmSyntax {
       new PureharmStreamOps(stream)
   }
 
+  //--------------------------- retry ----------------------------
+
+  final class RetryOps[M[_], A, E](action: => M[A])(implicit M: MonadError[M, E]) {
+
+    def retryingOnFailures[E](
+      wasSuccessful: A => M[Boolean],
+      policy:        RetryPolicy[M],
+      onFailure:     (A, RetryDetails) => M[Unit],
+    )(implicit
+      S:             Sleep[M]
+    ): M[A] =
+      retryOps.retryingOnFailures(
+        policy        = policy,
+        wasSuccessful = wasSuccessful,
+        onFailure     = onFailure,
+      )(action)
+
+    def retryingOnAllErrors(
+      policy:     RetryPolicy[M],
+      onError:    (E, RetryDetails) => M[Unit],
+    )(implicit S: Sleep[M]): M[A] =
+      retryOps.retryingOnAllErrors(
+        policy  = policy,
+        onError = onError,
+      )(action)
+
+    def retryingOnSomeErrors(
+      isWorthRetrying: E => M[Boolean],
+      policy:          RetryPolicy[M],
+      onError:         (E, RetryDetails) => M[Unit],
+    )(implicit S:      Sleep[M]): M[A] =
+      retryOps.retryingOnSomeErrors(
+        policy          = policy,
+        isWorthRetrying = isWorthRetrying,
+        onError         = onError,
+      )(action)
+
+    def retryingOnFailuresAndAllErrors(
+      wasSuccessful: A => M[Boolean],
+      policy:        RetryPolicy[M],
+      onFailure:     (A, RetryDetails) => M[Unit],
+      onError:       (E, RetryDetails) => M[Unit],
+    )(implicit S:    Sleep[M]): M[A] =
+      retryOps.retryingOnFailuresAndAllErrors(
+        policy        = policy,
+        wasSuccessful = wasSuccessful,
+        onFailure     = onFailure,
+        onError       = onError,
+      )(action)
+
+    def retryingOnFailuresAndSomeErrors(
+      wasSuccessful:   A => M[Boolean],
+      isWorthRetrying: E => M[Boolean],
+      policy:          RetryPolicy[M],
+      onFailure:       (A, RetryDetails) => M[Unit],
+      onError:         (E, RetryDetails) => M[Unit],
+    )(implicit S:      Sleep[M]): M[A] =
+      retryOps.retryingOnFailuresAndSomeErrors(
+        policy          = policy,
+        wasSuccessful   = wasSuccessful,
+        isWorthRetrying = isWorthRetrying,
+        onFailure       = onFailure,
+        onError         = onError,
+      )(action)
+  }
+
   //---------------------------- FOps ----------------------------
 
   final class FOps[F[_], A] private[PureharmSyntax] (val fa: F[A]) extends AnyVal {
@@ -79,6 +149,32 @@ object PureharmSyntax {
         case NonFatal(e) => UnhandledCatastrophe(e): AnomalyLike
       })
 
+    /** back-port of CE-3s .timed syntax
+      *
+      * @return
+      *   duration it took for the (successful) evaluation of F[A], in nanoseconds. Use [[timedIn]] if you want a method
+      *   that returns the time in the given unit.
+      */
+    def timed(implicit F: Monad[F], timer: Timer[F]): F[(FiniteDuration, A)] =
+      for {
+        start <- timer.clock.monotonic(NANOSECONDS): F[Long]
+        r     <- fa
+        end   <- timer.clock.monotonic(NANOSECONDS): F[Long]
+        dur = end - start
+      } yield (FiniteDuration(dur, NANOSECONDS), r)
+
+    /** .timedIn(scala.concurent.duration.NANOSECONDS) is equivalent to .timed
+      *
+      * @param timeUnit
+      *   default value is MILLISECONDS
+      */
+    def timedIn(timeUnit: TimeUnit = MILLISECONDS)(implicit F: Monad[F], timer: Timer[F]): F[(FiniteDuration, A)] =
+      for {
+        start <- timer.clock.monotonic(timeUnit): F[Long]
+        r     <- fa
+        end   <- timer.clock.monotonic(timeUnit): F[Long]
+        dur = end - start
+      } yield (FiniteDuration(dur.max(0L), timeUnit), r)
   }
 
   //--------------------------- OPTION ---------------------------
@@ -397,7 +493,7 @@ object PureharmSyntax {
       * @return
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
-    @scala.deprecated("Use a combination of attempt + .timed", "0.5.0")
+    @scala.deprecated("Use .attempt.timedIn(TimeUnit), or .attempt.timed to default to nanoseconds", "0.5.0")
     def timedAttempt(
       unit:       TimeUnit = MILLISECONDS
     )(implicit F: MonadThrow[F], timer: Timer[F]): F[(FiniteDuration, Attempt[A])] =
@@ -417,7 +513,10 @@ object PureharmSyntax {
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
       *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
-    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt.timedIn(TimeUnit), or retryingOnAllErrors(...).attempt.timed to default to nanoseconds. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def timedReattempt(
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
@@ -432,7 +531,10 @@ object PureharmSyntax {
 
     /** Same as overload timedReattempt, but does not report any failures.
       */
-    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt.timedIn(TimeUnit), or retryingOnAllErrors(...).attempt.timed to default to nanoseconds. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def timedReattempt(
       timeUnit:       TimeUnit
     )(
@@ -456,7 +558,10 @@ object PureharmSyntax {
       * @return
       *   N.B. It only captures the latest failure, if it encounters one.
       */
-    @scala.deprecated("Use retry from cats-retry", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def reattempt(
       errorLog:       (Throwable, String) => F[Unit]
     )(
@@ -470,7 +575,10 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
-    @scala.deprecated("Use a combination of attempt + .timed from cats-effect", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def reattempt(
       retries:        Int,
       betweenRetries: FiniteDuration,
@@ -491,7 +599,7 @@ object PureharmSyntax {
       * @return
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times both success and failure case.
       */
-    @scala.deprecated("Use a combination of attempt + .timed from cats-effect", "0.5.0")
+    @scala.deprecated("Use .attempt.timedIn(TimeUnit), or .attempt.timed to default to nanoseconds", "0.5.0")
     def timedAttempt[F[_], A](
       timeUnit:   TimeUnit
     )(
@@ -517,7 +625,10 @@ object PureharmSyntax {
       *   Never fails and captures the failure of the ``fa`` within the Attempt, times all successes and failures, and
       *   returns their sum. N.B. It only captures the latest failure, if it encounters one.
       */
-    @scala.deprecated("Use a combination of cats-retry + .timed from cats-effect", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt.timedIn(TimeUnit), or retryingOnAllErrors(...).attempt.timed to default to nanoseconds. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def timedReattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit],
       timeUnit:       TimeUnit,
@@ -565,7 +676,10 @@ object PureharmSyntax {
       * @return
       *   N.B. It only captures the latest failure, if it encounters one.
       */
-    @scala.deprecated("Use a cats-retry", "0.5.0")
+    @scala.deprecated(
+      "Use .retryingOnAllErrors(...).attempt, or retryingOnAllErrors(...).attempt. N.B there exists more retry methods now, where you can specify which errors to recover from. See cats-retry documentation",
+      "0.5.0",
+    )
     def reattempt[F[_]: MonadThrow: Timer, A](
       errorLog:       (Throwable, String) => F[Unit]
     )(
@@ -578,7 +692,7 @@ object PureharmSyntax {
 
     /** Same semantics as overload reattempt but does not report any error
       */
-    @scala.deprecated("Use a cats-retry", "0.5.0")
+    @scala.deprecated("Use .retryingOnFailures", "0.5.0")
     def reattempt[F[_]: MonadThrow: Timer, A](
       retries:        Int,
       betweenRetries: FiniteDuration,

@@ -86,7 +86,7 @@ ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
 // format: off
 val catsV            = "2.6.1"       //https://github.com/typelevel/cats/releases
-val catsEffectV      = "3.2.0"       //https://github.com/typelevel/cats-effect/releases
+val catsEffectV      = "3.2.1"       //https://github.com/typelevel/cats-effect/releases
 val catsEffect2V     = "2.5.2"       //https://github.com/typelevel/cats-effect/releases
 val fs2V             = "3.0.6"       //https://github.com/typelevel/fs2/releases
 val fs22V            = "2.5.9"       //https://github.com/typelevel/fs2/releases
@@ -114,7 +114,8 @@ lazy val root = project
 
 lazy val `effects-cats` = crossProject(JVMPlatform, JSPlatform)
   .settings(
-    scalacOptions ++= scalaCompilerOptions(scalaVersion.value)
+    scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
+    headerSources / excludeFilter := HiddenFileFilter || inlinedCatsRetryFiles,
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -142,7 +143,7 @@ lazy val `effects-catsJS` = `effects-cats`.js
 lazy val `effects-cats-2` = crossProject(JVMPlatform, JSPlatform)
   .settings(
     scalacOptions ++= scalaCompilerOptions(scalaVersion.value),
-    headerSources / excludeFilter := HiddenFileFilter || "*RandomImpl.scala" || "*Random.scala",
+    headerSources / excludeFilter := HiddenFileFilter || inlinedCatsRetryFiles || "*RandomImpl.scala" || "*Random.scala",
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -170,6 +171,16 @@ lazy val `effects-cats-2JS` = `effects-cats-2`.js
 //=============================================================================
 //================================= Settings ==================================
 //=============================================================================
+
+def inlinedCatsRetryFiles: FileFilter =
+  "*package.scala" ||
+    "*Fibonacci.scala" ||
+    "*PolicyDecision.scala" ||
+    "*RetryDetails.scala" ||
+    "*RetryPolicies.scala" ||
+    "*RetryPolicy.scala" ||
+    "*RetryStatus.scala" ||
+    "*Sleep.scala"
 
 def scalaCompilerOptions(scalaVersion: String): Seq[String] =
   CrossVersion.partialVersion(scalaVersion) match {

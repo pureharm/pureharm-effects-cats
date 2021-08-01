@@ -19,13 +19,19 @@ This is the first release for a stable Scala 3 version!
 ### new features
 
 #### pureharm-effects-cats-2
+- inline [cats-retry](https://github.com/cb372/cats-retry/releases/tag/v3.0.0)! and provide infix syntax support. We inlined because cats-retry does not have Scala 3 support yet.
+- deprecate all previous .reattempt, and .timedReattempt syntax in favor of things inlined from cats-retry
+- add `.timed : F[FiniteDuration]` (backport from cats-effect 3), and `.timedIn(t: TimeUnit): F[FiniteDuration]` syntax
 - add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation. It is source compatible w/ the version provided in the `pureharm-effects-cats`, and the cats-effect 3 version.
 
 ### pureharm-effects-cats
-- first compatible module w/ cats-effect 3!
-- removed PureharmIOApp, you can safely use IOApp, ResourceApp, and kin from cats-effect.
-- removed `BlockingShifter`, sinice ContextShift, and Blocker are both gone from cats-effect
-- removed `ExecutionContextMT`, since it existed solely for the purpose of instantiating a good pool from main. With cats-effect 3 it's almost impossible to give a good replacement, so just rely on the default compute pool of cats-effect 3, it's really good!
+- first compatible module w/ cats-effect `3.2.1`!
+    - removed PureharmIOApp, you can safely use IOApp, ResourceApp, and kin from cats-effect.
+    - removed `BlockingShifter`, sinice ContextShift, and Blocker are both gone from cats-effect
+    - removed `ExecutionContextMT`, since it existed solely for the purpose of instantiating a good pool from main. With cats-effect 3 it's almost impossible to give a good replacement, so just rely on the default compute pool of cats-effect 3, it's really good!
+- inline [cats-retry](https://github.com/cb372/cats-retry/releases/tag/v3.0.0)! and provide infix syntax support. We inlined because cats-retry does not have Scala 3 support yet.
+- add `.timedIn(t: TimeUnit): F[FiniteDuration]` syntax
+- deprecate all previous .reattempt, and .timedReattempt syntax in favor of things inlined from cats-retry
 
 
 ### new Scala versions:
