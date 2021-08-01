@@ -24,7 +24,7 @@ This is the first release for a stable Scala 3 version!
 - add `busymachines.pureharm.capabilities.Random[F]` capability trait. Use this for your randomness needs, including UUID generation. It is source compatible w/ the version provided in the `pureharm-effects-cats`, and the cats-effect 3 version.
 
 ### pureharm-effects-cats
-- first compatible module w/ cats-effect 3!
+- first compatible module w/ cats-effect `3.2.1`!
     - removed PureharmIOApp, you can safely use IOApp, ResourceApp, and kin from cats-effect.
     - removed `BlockingShifter`, sinice ContextShift, and Blocker are both gone from cats-effect
     - removed `ExecutionContextMT`, since it existed solely for the purpose of instantiating a good pool from main. With cats-effect 3 it's almost impossible to give a good replacement, so just rely on the default compute pool of cats-effect 3, it's really good!

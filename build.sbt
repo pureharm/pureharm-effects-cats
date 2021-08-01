@@ -86,7 +86,7 @@ ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
 
 // format: off
 val catsV            = "2.6.1"       //https://github.com/typelevel/cats/releases
-val catsEffectV      = "3.2.0"       //https://github.com/typelevel/cats-effect/releases
+val catsEffectV      = "3.2.1"       //https://github.com/typelevel/cats-effect/releases
 val catsEffect2V     = "2.5.2"       //https://github.com/typelevel/cats-effect/releases
 val fs2V             = "3.0.6"       //https://github.com/typelevel/fs2/releases
 val fs22V            = "2.5.9"       //https://github.com/typelevel/fs2/releases
